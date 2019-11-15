@@ -1,5 +1,5 @@
 <?php
-if( $_SESSION["logeado"] == false){
+if($_SESSION["logeado"] == false){
 header("location:login.php");
 }
 $rol=0; 
