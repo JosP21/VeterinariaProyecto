@@ -62,6 +62,7 @@ if(!isset($_SESSION["carrito"])){$_SESSION["carrito"];}
                 success:function(resp){
                     if (resp=="") {
                         mostrarMensaje('GUARDADO CON EXITO','success',null,"Se guardo el servicio = "+nombre+"  Con el valor de: $"+precio,true);
+                         location.reload();
                     }else if (resp == "ERROR") {
                        mostrarMensaje('ERROR','warning',null,"Ocurrió un error",true);
                    }else{
