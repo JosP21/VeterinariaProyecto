@@ -1,7 +1,11 @@
 <?php 
 
 session_start();
-if (empty($_SESSION["carrito"])) {
+$x=0;
+foreach ($_SESSION["carrito"] as $indi) {
+$x = 1;
+}
+if ($x==0) {
 	header("Location: ../from/servicios.php?status=4");
 }elseif (!empty($_POST['nombreexp']) && !empty($_POST['nombreemp'])) {
 
