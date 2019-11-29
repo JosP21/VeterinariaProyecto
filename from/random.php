@@ -7,7 +7,7 @@ echo ord('Z');
     $caracter=substr( "Hola", 1);
     $numero="1"+1;
 */
-$fecha_actual = date("Y-m-d");
+/*$fecha_actual = date("Y-m-d");
 //resto 1 anio
 $anio=2;
 $retarA=date("Y-m-d",strtotime($fecha_actual.-$anio." year"));
@@ -33,5 +33,20 @@ $fecha_nacimiento = "03-10-2017";
   print "edad: ".$texto."<br>";
 
   // $fecha=date("d-m-y");
-   //echo $fecha;
+   //echo $fecha;*/
+
+  $cadena = 'Hola Mundo Hermoso';
+
+    list($palabra1, $palabra2,$palabra3) = explode(' ', $cadena);
+
+    echo $palabra1 . '<br>';
+
+    echo $palabra2 . '<br>';
+
+    echo $palabra3 . '<br>';
+
+    $date = date('h:i',strtotime("05:59"));
+    $NuevaFecha = strtotime ( '+18 minute' , strtotime ($date) ) ;
+    $NuevaFecha = date ( 'h:i' , $NuevaFecha); 
+echo $NuevaFecha;
 ?>

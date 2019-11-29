@@ -9,6 +9,9 @@ function  miDataTable(){
     $('#miTabla').DataTable({
 
     });
+    $('#miTablaS').DataTable({
+
+    });
      $('#Tabla').DataTable({
 
     });

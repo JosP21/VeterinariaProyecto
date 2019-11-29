@@ -26,7 +26,7 @@ if($_SESSION["foto"] != null){
             <li><a href="login.php?salir=true"><i class="zmdi zmdi-power zmdi-hc-fw"></i>Salir</a></li>
             <li><a href="acercaDe.php"><i class="zmdi zmdi-info zmdi-hc-fw"></i>Acerca de</a></li>
             <li><a href="#" onclick="abrirVentana();"><i class="zmdi zmdi-help zmdi-hc-fw"></i>Ayuda</a></li>
-            <li style="color:#fff; cursor:default;"><span class="all-tittles">
+            <li style="color:#fff; cursor:default;"><span class="all-tittles" id="usus">
                 <?php
                 echo $nombres
                 ?>

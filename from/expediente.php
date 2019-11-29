@@ -39,6 +39,7 @@ header("location:login.php");
     <link rel="stylesheet" href="../assets/css/material-design-iconic-font.min.css">
     <link rel="stylesheet" href="../assets/css/normalize.css">
     <script type="text/javascript">
+      
         function GuardarProp(){
             var nombrepro=document.getElementById('nombrepro').value;
             var apellidopro=document.getElementById('apellidopro').value;

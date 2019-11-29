@@ -1,6 +1,8 @@
-<!-- 
-* Copyright 2016 Carlos Eduardo Alfaro Orellana
--->
+<?php session_start();
+  if($_SESSION["logeado"] == false) {
+header("location:login.php");
+  }
+  ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -21,7 +23,7 @@
   <script src="../assets/js/jquery.dataTables.min.js"></script>
   <link rel="stylesheet" href="../assets/css/style.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="../assets/js/jquery-1.11.2.min.js"><\/script>')</script>
+ <script>window.jQuery || document.write('<script src="../assets/js/jquery-1.11.2.min.js"><\/script>')</script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8/dist/sweetalert2.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@8/dist/sweetalert2.min.css" id="theme-styles">
     <script src="../assets/js/modernizr.js"></script>
