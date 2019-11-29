@@ -8,7 +8,8 @@ if(!empty($producto)) {
 		detproductos.fechaCaduc as fecha,
 		detproductos.precCompra as precioC,
 		detproductos.precVenta as precioV,
-		productos.id_producto as id
+		productos.id_producto as id,
+		productos.stockMin as stockM
 		FROM
 		productos
 		INNER JOIN detproductos ON detproductos.id_producto = productos.id_producto GROUP BY productos.nombre");
@@ -31,7 +32,8 @@ if(!empty($producto)) {
 
 		$json['existencia']=$pro->existencia;
 		$json['precio']=$pro->precioV;
-
+		$json['stockp']=$pro->stockM;
+        
 		$jsonstring = json_encode($json);
 		echo $jsonstring;
 		
