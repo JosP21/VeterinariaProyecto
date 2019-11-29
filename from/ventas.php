@@ -108,6 +108,10 @@ $fechacorrecta= date("Y-m-d",strtotime($fecha."+ 150 days"));
             document.getElementById('existencia').value = dato["existencia"];
             document.getElementById('precio').value = dato["precio"];
             
+            if(parseInt(dato["existencia"])< parseInt(dato["stockp"])){
+               alertify.error('Producto Agotandose');
+            }
+            
           }
         }
       });
