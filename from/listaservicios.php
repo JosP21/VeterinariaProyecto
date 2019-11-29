@@ -1,6 +1,9 @@
-<!-- 
-* Copyright 2016 Carlos Eduardo Alfaro Orellana
--->
+<?php session_start();
+if($_SESSION["logeado"] == false) {
+    header("location:login.php");
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -28,6 +31,18 @@
     <script type="text/javascript" src="../assets/datatable/js/jquery-3.3.1.js"></script>
     <script type="text/javascript" src="../assets/datatable/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="../assets/datatable/datatable.js"></script>
+    <script type="text/javascript">
+        function idExp(id){
+            $.ajax({
+                type:"POST",
+                url:"../metodosAjax/ServicioPorExpediente.php",
+                data:{val:id},
+                success:function(resp){
+                   document.getElementById('datos').innerHTML=resp;
+               }
+           });
+        }
+    </script>
 </head>
 
 <body>
@@ -41,80 +56,112 @@
               <h1 class="all-tittles">Animal Pet's <small>&nbsp;&nbsp;Servicios</small></h1>
           </div>
       </div>
-        <div class="container-fluid">
-      <ul class="nav nav-tabs nav-justified"  style="font-size: 17px;">
-        <li role="presentation" class="active"><a href="servicios.php">Gestionar Servicios</a></li>
-        <li role="presentation"><a href="inventarioser.php">Inventario</a></li>
-      </ul>
+      <div class="container-fluid">
+          <ul class="nav nav-tabs nav-justified"  style="font-size: 17px;">
+            <li role="presentation" class="active"><a href="servicios.php">Gestionar Servicios</a></li>
+            <li role="presentation"><a href="inventarioser.php">Inventario</a></li>
+        </ul>
     </div>
-        <div class="container-fluid" style="margin: 10px 0;">
-            <div class="row">
-                <div class="col-xs-12 lead">
-                    <ol class="breadcrumb">
-                        <li><a href="servicios.php">Nuevo</a></li>
-                        <li class="active">Servicios Realizados</li>
-                    </ol>
-                </div>
+    <div class="container-fluid" style="margin: 10px 0;">
+        <div class="row">
+            <div class="col-xs-12 lead">
+                <ol class="breadcrumb">
+                    <li><a href="servicios.php">Nuevo</a></li>
+                    <li class="active">Servicios Realizados</li>
+                </ol>
             </div>
         </div>
-        <div class="container-fluid col-sm-8 col-sm-offset-2">
-            <div class="div-table">
-                <table id="miTabla" class="display responsive nowrap" style="width:100%">
-                    <thead>
+    </div>
+    <div class="container-fluid col-sm-8 col-sm-offset-2">
+        <div class="div-table">
+            <table id="miTabla" class="display responsive nowrap" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Expediente</th>
+                        <th>Detalle</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    include "../config/conexion.php";
+                    $result=$conexion->query("SELECT
+                        mascotas.id_mascota,
+                        mascotas.nombre,
+                        Sum(servicios.precio) AS total,
+                        raza.nombre as raza
+                        FROM
+                        citas
+                        INNER JOIN mascotas ON citas.id_mascota = mascotas.id_mascota
+                        INNER JOIN servicios ON citas.id_servicio = servicios.id_servicio
+                        INNER JOIN raza ON mascotas.id_raza = raza.id_raza
+                        GROUP BY mascotas.id_mascota
+                        ORDER BY mascotas.nombre");
+                    if($result){
+                      while($fila = $result->fetch_object()){ ?>
                         <tr>
-                            <th>Expediente</th>
-                            <th>Detalle</th>
-                            <th>Total</th>
-                            <th>Accion</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>00001</td>
+                            <td><?php echo $fila->id_mascota." ".$fila->nombre." - ".$fila->raza?></td>
                             <td>
-                                <a href="#" data-toggle= "modal" data-target= "#modificarser" class="material-control" required="" maxlength="50"  btnm-data-title="Ver Detalles">
+                                <a onclick="idExp('<?php echo($fila->id_mascota) ?>');" data-toggle= "modal" data-target= "#modificarser" class="material-control" required="" maxlength="50"  btnm-data-title="Ver Detalles">
                                     <i class="zmdi zmdi-eye" style="color: #31920D;">
                                     </i>
                                 </a>
                             </td>
                             <td>
-                                $5.00
-                            </td>
-                            <td>
-                                <a href="#" onclick="" class="material-control" required="" maxlength="50" btne-data-title="Eliminar">
-                                        <i class="zmdi zmdi-delete" style="color: #F91D0B;">
-                                        </i>
-                                    </a>
+                                $<?php echo $fila->total?>
                             </td>
                         </tr>
-                    </tbody>
-                </table>
-            </div><div style="margin: 6.5% 0;"></div>
-        </div>
-        <div class="modal fade" id="modificarser">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <center>
-                            <h5 class="modal-title">Servicios</h5></center>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true"> &times; </span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            Listado de Servicios...
-                        </div>
-                        <div class="modal-footer">
-                            <center>
-                                <button type="button" class="btn btn-return" data-dismiss="modal"><i class="zmdi zmdi-mail-reply"></i> &nbsp;&nbsp; Volver</button>
-                            </center>
-                        </div>
-                    </div>
+                        <?php
+                    }
+                }
+                ?>
+            </tbody>
+        </table>
+    </div><div style="margin: 6.5% 0;"></div>
+</div>
+<div class="modal fade" id="modificarser">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <center>
+                    <h5 class="modal-title">Servicios</h5></center>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"> &times; </span>
+                    </button>
                 </div>
+                <div class="modal-body" id="datos">
+                    <div class="div-table">
+                        <table id="miTabla2" class="display responsive nowrap" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Servicio</th>
+                                    <th>Precio Unitario</th>
+                                    <th>Realizador del servicio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>""</td>
+                                    <td>""</td>
+                                    <td>""</td>
+                                    <td>""</td>
+                                </tr>
+                        </tbody>
+                    </table>
+                </div><div style="margin: 6.5% 0;"></div>
             </div>
+            <div class="modal-footer">
+                <center>
+                    <button type="button" class="btn btn-return" data-dismiss="modal"><i class="zmdi zmdi-mail-reply"></i> &nbsp;&nbsp; Volver</button>
+                </center>
+            </div>
+        </div>
+    </div>
+</div>
 
-        </body>
-        <footer class="footer full-reset col-sm-12">
-            <div class="footer-copyright full-reset all-tittles"><center>Universidad de EL Salvador-FMP 2019</center></div>
-        </footer>
-        </html>
+</body>
+<footer class="footer full-reset col-sm-12">
+    <div class="footer-copyright full-reset all-tittles"><center>Universidad de EL Salvador-FMP 2019</center></div>
+</footer>
+</html>
