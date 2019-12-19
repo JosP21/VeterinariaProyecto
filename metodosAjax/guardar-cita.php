@@ -1,5 +1,5 @@
 <?php
-include"../config/conexion.php";
+include"../config/conexion2.php";
 date_default_timezone_set("America/El_Salvador");
 if(!empty($_POST['val'])){
   $exp=$_POST['val'];
@@ -57,7 +57,7 @@ if(!empty($_POST['accion'])){
     <div style="margin-top: -21%;" class="col-sm-4 col-sm-offset-6">
                                 <div class="group-material" id="propietarioG">
                                 <?php
-                                include"../config/conexion.php";
+                                include"../config/conexion2.php";
                                 $cosulta="SELECT empleados.nombres as nomb, empleados.apellidos as ape, empleados.id_Empleado as idEm  FROM empleados where empleados.rol='Administrador'";
                                 $resultado = $conexion->query($cosulta);
                                 if($resultado){
@@ -273,7 +273,7 @@ $cosultaexp="UPDATE `citas` SET `estado`='".$estado."' WHERE `id_cita`='".$idcit
       }
 }
 function actualizar(){
-  include"../config/conexion.php";
+  include"../config/conexion2.php";
   $resulta=$conexion->query("SELECT
                                                     mascotas.id_mascota as idM,
                                                     mascotas.nombre as nomM,

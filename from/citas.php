@@ -207,7 +207,7 @@ function inicio(){
                                     <input type="text" name="mascota" id="mascota" class="material-control tooltips-general" placeholder="Nombre Mascota..."  data-min-length="1" data-selection-required="true" data-toggle="tooltip" data-placement="top" title="" onkeypress="return sololetras(event);" data-original-title="Solo letras" list="listaexpe" autocomplete="off">
                                     <datalist id="listaexpe">
                                         <?php
-                                            include"../config/conexion.php";
+                                            include"../config/conexion2.php";
                                             $cosulta="SELECT DISTINCT(nombre),id_mascota,alias FROM mascotas ORDER BY nombre";
                                              $resultado = $conexion->query($cosulta);
                                               if($resultado){
@@ -228,7 +228,7 @@ function inicio(){
                                     <div id="raza">
                                     <datalist id="listar">
                                         <?php
-                                            include"../config/conexion.php";
+                                            include"../config/conexion2.php";
                                             $cosulta="SELECT DISTINCT(nombre) FROM `raza` ORDER BY nombre";
                                              $resultado = $conexion->query($cosulta);
                                               if($resultado){
@@ -259,7 +259,7 @@ function inicio(){
                                     <input type="text" name="servicio" id="servicio" class="material-control tooltips-general" placeholder="Nombre de Servicio.." required="" data-min-length="1" data-selection-required="true" data-toggle="tooltip" data-placement="top" title="Solo letras" onkeypress="return sololetras(event);" list="listaServ">
                                     <datalist id="listaServ">
                                         <?php
-                                            include"../config/conexion.php";
+                                            include"../config/conexion2.php";
                                             $cosulta="SELECT servicios.nombre as n FROM servicios ORDER BY servicios.nombre";
                                              $resultado = $conexion->query($cosulta);
                                               if($resultado){
@@ -347,7 +347,7 @@ function validarhora(){
         }
     });
 }
-function validarhora(){
+/*function validarhora(){
     $.ajax({
         type:"POST",
         url:"../metodosAjax/guardar-cita.php",
@@ -356,7 +356,7 @@ function validarhora(){
                 document.getElementById("horafl1").innerHTML=resp;
         }
     });
-}
+}*/
 
 function agregarServicio(){
     var datos=$("#frmcita").serialize();

@@ -38,9 +38,9 @@ if($_SESSION["logeado"] == false) {
                 url:"../metodosAjax/ServicioPorExpediente.php",
                 data:{val:id},
                 success:function(resp){
-                   document.getElementById('datos').innerHTML=resp;
-               }
-           });
+                 document.getElementById('datos').innerHTML=resp;
+             }
+         });
         }
     </script>
 </head>
@@ -93,8 +93,9 @@ if($_SESSION["logeado"] == false) {
                         FROM
                         citas
                         INNER JOIN mascotas ON citas.id_mascota = mascotas.id_mascota
-                        INNER JOIN servicios ON citas.id_servicio = servicios.id_servicio
                         INNER JOIN raza ON mascotas.id_raza = raza.id_raza
+                        INNER JOIN detservicio ON detservicio.id_cita = citas.id_cita
+                        INNER JOIN servicios ON detservicio.id_servicio = servicios.id_servicio
                         GROUP BY mascotas.id_mascota
                         ORDER BY mascotas.nombre");
                     if($result){
@@ -147,18 +148,18 @@ if($_SESSION["logeado"] == false) {
                                     <td>""</td>
                                     <td>""</td>
                                 </tr>
-                        </tbody>
-                    </table>
-                </div><div style="margin: 6.5% 0;"></div>
-            </div>
-            <div class="modal-footer">
-                <center>
-                    <button type="button" class="btn btn-return" data-dismiss="modal"><i class="zmdi zmdi-mail-reply"></i> &nbsp;&nbsp; Volver</button>
-                </center>
+                            </tbody>
+                        </table>
+                    </div><div style="margin: 6.5% 0;"></div>
+                </div>
+                <div class="modal-footer">
+                    <center>
+                        <button type="button" class="btn btn-return" data-dismiss="modal"><i class="zmdi zmdi-mail-reply"></i> &nbsp;&nbsp; Volver</button>
+                    </center>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 </body>
 <footer class="footer full-reset col-sm-12">

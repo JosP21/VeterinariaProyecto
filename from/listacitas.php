@@ -167,7 +167,7 @@ header("location:login.php");
                         </thead>
                         <tbody>
                             <?php
-                            include "../config/conexion.php";
+                            include "../config/conexion2.php";
                             $result=$conexion->query("SELECT
                                                     mascotas.id_mascota as idM,
                                                     mascotas.nombre as nomM,

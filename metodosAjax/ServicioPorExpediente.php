@@ -3,16 +3,17 @@ if(!empty($_POST['val'])){ //Editar
 	$id=$_POST['val'];
 	include '../config/conexion.php';
 	$result=$conexion->query("SELECT
+		citas.fecha,
 		servicios.nombre,
-		servicios.precio,
 		empleados.nombres,
 		empleados.apellidos,
-		citas.fecha
+		servicios.precio
 		FROM
-		citas
-		INNER JOIN mascotas ON citas.id_mascota = mascotas.id_mascota
-		INNER JOIN servicios ON citas.id_servicio = servicios.id_servicio
+		detservicio
+		INNER JOIN citas ON detservicio.id_cita = citas.id_cita
+		INNER JOIN servicios ON detservicio.id_servicio = servicios.id_servicio
 		INNER JOIN empleados ON citas.id_empleado = empleados.id_Empleado
+		INNER JOIN mascotas ON citas.id_mascota = mascotas.id_mascota
 		where mascotas.id_mascota = '$id'
 		ORDER BY citas.fecha");
 	if($result){
