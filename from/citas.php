@@ -51,6 +51,7 @@ $("#servicio").click(function(){
 servicio();
 });
 });
+
 function cita(){
 var datos=$("#frmaccion").serialize();
 $.ajax({
@@ -83,10 +84,13 @@ function buscarPrecio(value){
     $.ajax({
         type:"POST",
         url:"../metodosAjax/guardar-cita.php",
-        data:{precioS:value},
+        data:{nombreS:value},
         success:function(resp){
             if(resp!=null){
                 document.getElementById("precio").value=resp;
+                document.getElementById("precio").style.pointerEvents= "none";
+            }else{
+                document.getElementById("precio").style.pointerEvents= "auto";
             }
         }
     });
@@ -125,7 +129,6 @@ $(document).ready(function(){
         buscarP(value);
     });
 });
-
 function limpiar(){
     document.getElementById('campos').innerHTML="";
     document.getElementById("frmaccion").reset();
@@ -140,7 +143,82 @@ function inicio(){
    // $('#myModal').modal('toggle');
     //$("#acciones").html("");
 //}
+
+function myFunction() {
+  // Declare variables
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+
+  // Loop through all table rows, and hide those who don't match the search query
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[2];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+}
 </script>
+<style type="text/css">
+
+  #myInput {
+    /*background-image: url('/css/searchicon.png'); /* Add a search icon to input */
+    /*background-position: 10px 12px; /* Position the search icon */
+    /*background-repeat: no-repeat; /* Do not repeat the icon image */
+    width: 30%; /* Full-width */
+    height: 10%;
+    font-size: 16px; /* Increase font-size */
+    padding: 6px 6px 6px 6px; /* Add some padding */
+    border: 2px solid #ddd; /* Add a grey border */
+    margin-top: 8px;
+    margin-bottom: 8px; /* Add some space below the input */
+
+  }
+
+  #myTable {
+    border-collapse: collapse; /* Collapse borders */
+    width: 100%; /* Full-width */
+    border: 1px solid #ddd; /* Add a grey border */
+    font-size: 18px; /* Increase font-size */
+    
+  }
+
+  #myTable th, #myTable td {
+    text-align: left; /* Left-align text */
+    padding: 12px; /* Add padding */
+    background-color: #59aab8;
+  }
+
+  #myTable td {
+   background-color: white;
+ }
+
+ #myTable tr {
+  /* Add a bottom border to all table rows */
+  border-bottom: 1px solid #ddd;
+}
+
+#myTable tr.header, #myTable tr:hover {
+  /* Add a grey background color to the table header and on hover */
+  background-color: #f1f1f1;
+}
+
+#listaproveedor {
+  width: 100%;
+  height: 100%;
+  border: 1px; 
+  overflow: auto;
+}
+
+</style>
+
 </head>
 <body onload="mensaje();inicio();">
     <?php
@@ -187,7 +265,7 @@ function inicio(){
                          <input type="radio" name="accion" id="cita" value="Cita">
                          <label for="cita" onclick="cita()">Registrar Cita</label>
                          <input type="radio" name="accion" id="servicio" value="Servicio">
-                         <label for="servicio">Realizar Cita de servicio</label>
+                         <label for="servicio" onclick="servicio()">Realizar Cita de servicio</label>
                        </div>
                      </div>
                    </center>
@@ -254,7 +332,7 @@ function inicio(){
                                 
                             </div>
                             <div id="tablaS">
-                                 <div class="col-sm-4 col-sm-offset-0" style="margin-left: 14%;">
+                                 <div class="col-sm-4 col-sm-offset-0" style="margin-left: 13%;">
                         <div class="group-material">
                                     <input type="text" name="servicio" id="servicio" class="material-control tooltips-general" placeholder="Nombre de Servicio.." required="" data-min-length="1" data-selection-required="true" data-toggle="tooltip" data-placement="top" title="Solo letras" onkeypress="return sololetras(event);" list="listaServ">
                                     <datalist id="listaServ">
@@ -277,30 +355,28 @@ function inicio(){
                                 <label>Precio ($)</label>
                             </div></div></div>
                             <div class="col-sm-1" style="margin-top: 0.5%;margin-left: 2%;">
-                            <button type="button" class="btn btn-add" onclick="agregarServicio()" data-toggle="modal"><i class="zmdi zmdi-plus"></i> &nbsp;&nbsp; Agregar</button> </div>
-                                <div class="col-sm-6 col-sm-offset-2" style="margin-left: 9%;">
-                            <div class="div-table">
-                                <table id="miTablaS" class="display responsive nowrap" style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th>Servicios Citados</th>
-                                            <th>Precio</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Baño anti-pulgas</td>
-                                            <td>$5.00</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div><div style="margin: 6.5% 0;"></div>
+                            <button type="button" id="btn-agregar" class="btn btn-add"><i class="zmdi zmdi-plus"></i> &nbsp;&nbsp; Agregar</button> </div>
+                                <div class="col-sm-6 col-sm-offset-2" style="margin-left: 9%;"><div class="div-table">
+    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Buscar.." class="col-sm-6 col-sm-offset-8">
+    <table id="myTable" class="display responsive nowrap" style="width:100%">
+      <thead>
+        <tr>
+          <th>Servicio Citado</th>
+          <th>Precio</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody id="listado">
+
+      </tbody>
+    </table>
+  </div><div style="margin: 6.5% 0;"></div>
                         </div>
                         <div class="col-sm-4 col-sm-offset-0">
                                     <div class="container-flat-form">
                                         
                                             <p></p><h3 align="center">TOTAL</h3>
-                                                <input type="text-center" class="material-control tooltips-general" readonly="readonly" value="$4.50" style="text-align: center; width: 50%; margin-left:62px; background-color: #e5f4f7; color: black;">
+                                                <input type="text-center" id="totalpagar" class="material-control tooltips-general" readonly="readonly" value="$4.50" style="text-align: center; width: 50%; margin-left:62px; background-color: #e5f4f7; color: black;">
                                             <p></p> 
                                             <hr style="color: blue" width="90%" size="3" align="center">
                                                 <div class="col-sm-6 col-sm-offset-0" style="margin-top: -6%;">
@@ -315,6 +391,7 @@ function inicio(){
            </div>
             </div>
         </div>
+        <script src="../assets/js/serviciocitado.js"></script>
         
 <?php
     include "../from/addexpediente.php"
@@ -347,7 +424,7 @@ function validarhora(){
         }
     });
 }
-function validarhora(){
+/*function validarhora(){
     $.ajax({
         type:"POST",
         url:"../metodosAjax/guardar-cita.php",
@@ -356,7 +433,7 @@ function validarhora(){
                 document.getElementById("horafl1").innerHTML=resp;
         }
     });
-}
+}*/
 
 function agregarServicio(){
     var datos=$("#frmcita").serialize();

@@ -36,11 +36,11 @@ header("location:login.php");
     <script type="text/javascript" src="../assets/datatable/js/dataTables.responsive.min.js"></script>
     <script type="text/javascript" src="../assets/datatable/datatable.js"></script>
     <script type="text/javascript">
-        function pasarConsulta(id,idexp){
+        function pasarConsulta(id,idexp,idCita){
             $.ajax({
               type:"POST",
               url:"../metodosAjax/guardar-cita.php",
-              data:{idC:id,idE:idexp},
+              data:{fecha:id,idE:idexp,idcita:idCita},
               success:function(resp){
                 document.getElementById('datosExp').innerHTML=resp;
               }
@@ -92,6 +92,7 @@ header("location:login.php");
               url:"../metodosAjax/guardar-cita.php",
               data:{id_cita:document.getElementById("idCita").value},
               success:function(resp){
+                alert(resp);
                 $("#Consulta")[0].reset(); 
                 document.getElementById('miTabla').innerHTML=resp;
                 mostrarMensaje('Se guardo correctamente','success',null,"La consulta a sido guardada exitosamente",true);
@@ -203,7 +204,7 @@ header("location:login.php");
                                         </i>
                                     </a>
                                     &nbsp;&nbsp;
-                                    <button href="#" data-toggle= "modal" data-target= "#Consulta" data-backdrop="static" data-keyboard="false" tabindex="-1" class="material-control tooltips-general btn btn-return" required="" maxlength="50" onclick="pasarConsulta(<?php echo $fila->fecha?>,<?php echo " '".$fila->idM."' "?>)">Pasar Consulta
+                                    <button href="#" data-toggle= "modal" data-target= "#Consulta" data-backdrop="static" data-keyboard="false" tabindex="-1" class="material-control tooltips-general btn btn-return" required="" maxlength="50" onclick="pasarConsulta(<?php echo $fila->fecha?>,<?php echo " '".$fila->idM."' "?>,<?php echo $fila->idC?>)">Pasar Consulta
                                         <i class="zmdi zmdi-mail-send" style="color: #fff; margin-left: 6%">
                                         </i></button>
                                 </td>

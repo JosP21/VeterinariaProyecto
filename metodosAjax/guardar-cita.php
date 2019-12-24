@@ -93,7 +93,7 @@ if(!empty($_POST['accion'])){
                                     <input type="date" name="fecha" id="fecha" class="material-control tooltips-general"  required="" data-min-length="1" data-selection-required="true" data-toggle="tooltip" data-placement="top" onchange="validarhoraS()" title="" value="" data-original-title=""><label>Fecha</label>
                                 </div></div>
                                 <div id="horafl1">
-                                <div style="margin-top: -8%;margin-left: 68%;" class="col-sm-2 col-sm-offset-0">
+                                <div style="margin-top: -8.5%;margin-left: 68%;" class="col-sm-2 col-sm-offset-0">
                                 <div class="group-material" id="propietarioG">
                                     <input type="time" name="hora" id="hora" class="material-control tooltips-general" data-min-length="1" data-selection-required="true" data-toggle="tooltip" data-placement="top" title="" data-original-title=""><label>Hora</label>
                                 </div></div>
@@ -167,9 +167,10 @@ if(!empty($_POST['mascota']) && !empty($_POST['razamascota']) && !empty($_POST['
       echo "ERROR";
     }
 }
-if(!empty($_POST['idC']) && !empty($_POST['idE'])){
-$idC=$_POST['idC'];
+if(!empty($_POST['fecha']) && !empty($_POST['idE']) && !empty($_POST['idcita'])){
+$fecha=$_POST['fecha'];
 $idExp=$_POST['idE'];
+$idT=$_POST['idcita'];
 $result=$conexion->query("SELECT
 mascotas.id_mascota AS idM,
 mascotas.nombre AS nomM,
@@ -180,7 +181,7 @@ citas.id_cita as idC
 FROM
 mascotas
 INNER JOIN propietario ON mascotas.id_propietario = propietario.id_propietario
-INNER JOIN citas ON citas.id_mascota = mascotas.id_mascota where mascotas.id_mascota='".$idExp."'");
+INNER JOIN citas ON citas.id_mascota = mascotas.id_mascota where mascotas.id_mascota='".$idExp."' and citas.id_cita='".$idT."'");
          if($result){
           if($fila = $result->fetch_object()){
             list($n1, $n2) = explode(' ', $fila->nomM);
@@ -326,19 +327,19 @@ function actualizar(){
                             }?></tbody><?php
                        }
 }
-if(!empty($_POST['precioS'])){
+if(!empty($_POST['nombreS'])){
 $cosulta="SELECT
 servicios.nombre AS n,
 servicios.precio AS p,
 servicios.id_servicio as id
-FROM servicios WHERE servicios.nombre='".$_POST['precioS']."'";
+FROM servicios WHERE servicios.nombre='".$_POST['nombreS']."'";
   $resultado = $conexion->query($cosulta);
   if($resultado){
     if($fila = $resultado->fetch_object()){
-      if($fila->n==$_POST['precioS']){
+      if($fila->n==$_POST['nombreS']){
         echo $fila->p;
       }else{
-        echo 1;
+        echo 0.0;
       }
     }
   }
