@@ -11,8 +11,6 @@ header("location:login.php");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="Shortcut Icon" type="image/x-icon" href="../assets/img/icon-clinica.jpg" />
-    <script src="../assets/js/sweet-alert.min.js"></script>
-    <link rel="stylesheet" href="../assets/css/sweet-alert.css">
     <link rel="stylesheet" href="../assets/css/material-design-iconic-font.min.css">
     <link rel="stylesheet" href="../assets/css/normalize.css">
     <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
@@ -29,12 +27,19 @@ header("location:login.php");
     <script src="../assets/js/jquery.mCustomScrollbar.concat.min.js"></script>
     <script src="../assets/js/main.js"></script>
     <script src="../assets/js/controlador.js"></script>
+    <script type="text/javascript" src="../assets/js/sweet-alert.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../assets/css/sweet-alert.css">
+    <script src="../assets/js/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="../assets/css/sweetalert2.min.css">
     <script type="text/javascript" src="../assets/datatable/js/jquery-3.3.1.js"></script>
     <script type="text/javascript" src="../assets/datatable/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="../assets/datatable/js/dataTables.responsive.min.js"></script>
     <script type="text/javascript" src="../assets/datatable/datatable.js"></script>
    <script type="text/javascript" src="../assets/js/jquery.mask.min.js"></script>
-    <script type="text/javascript" src="../assets/js/sweet-alert.min.js"></script>
+    <script type="text/javascript">
+        $('#expediente').on('shown.bs.modal', function() { $(document).off('focusin.modal'); });
+        
+    </script>
 </head>
 <body>
     <?php
@@ -134,7 +139,7 @@ header("location:login.php");
                         </div>
                         <div class="modal-footer">
                             <center>
-                                <button type="button" class="btn btn-return" data-dismiss="modal"><i class="zmdi zmdi-mail-reply"></i> &nbsp;&nbsp; Volver</button>
+                                <button type="button" class="btn btn-return"  onclick="prueba()" ><i class="zmdi zmdi-mail-reply"></i> &nbsp;&nbsp; Volver</button>
                             </center>
                         </div>
                     </div>

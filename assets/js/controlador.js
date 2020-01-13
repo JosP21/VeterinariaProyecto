@@ -61,7 +61,7 @@ function abrirRC(){
         window.open(url, "Nuevo","alwaysRaised=no,toolbar=no,menubar=no,status=no,resizable=no,width=2000%,height=1000%,location=no");
       }
 function mostrarMensaje(titulo,tipo,tiempo,texto,vf){
-    swal({
+    swal.fire({
         type : tipo,
         title: titulo,
         text:texto,

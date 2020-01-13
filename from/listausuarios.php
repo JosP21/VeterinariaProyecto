@@ -71,15 +71,28 @@ header("location:login.php");
            }
            if(!nombre=="" && !apellido=="" && !telefono=="" && (!Email=="" && validar_email(Email)) && !direccion=="" && !rol==""){
              var datos=$("#frmumodificar").serialize();
-             $.ajax({
+             swal.fire({
+                    title: "<div>Motivo por el cual desea hacer una modificacion al empleado <span style='color: #182d7d;'>"+nombre+" "+apellido+"</span>, que desempeña el rol de <span style='color: #182d7d;'>"+rol+"</span></div>",
+                    input: "text",
+                    showCancelButton: true,
+                    confirmButtonText: "Guardar",
+                    cancelButtonText: "Cancelar",
+                }).then(resultado => {
+                    if (resultado.value) {
+                        let mot = resultado.value;
+                         $.ajax({
               type:"POST",
               url:"../metodosAjax/save-usuarios.php",
-              data:datos,
+              data:{nombrem:nombre,apellidom:apellido,telefonoUm:telefono,emailm:Email,rolm:rol,direccionm:direccion,contrasenam:document.getElementById('contrasenam').value,motivo:mot,idprov:document.getElementById('idprov').value},
               success:function(resp){
                document.getElementById('miTabla').innerHTML=resp;
                mostrarMensaje('Se Modificó','success',null,"El registro a sido modificado satisfactoriamente ",true);
              }
            });
+                    }else {
+                        modificarExpe();
+                    }
+                    });
 
            }
          }
@@ -95,8 +108,31 @@ header("location:login.php");
          });
         }
 
-        function eliminar(id){
-          $.ajax({
+        function eliminar(id,nombre,apellido,rol){
+          var ide=id;
+          var nom=nombre;
+          var ape=apellido;
+          var r=rol;
+          swal.fire({
+                    title: 'Esta seguro?',
+                    text: "Desea eliminar este registro",
+                    type: 'warning',
+                    showCancelButton: true ,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si, eliminar!',
+                }).then((result)=>{
+                    if(result.value){
+                        Swal.fire({
+                    title: "<div>Motivo por el cual desea hacer una modificacion al empleado <span style='color: #182d7d;'>"+nombre+" "+apellido+"</span>, que desempeña el rol de <span style='color: #182d7d;'>"+rol+"</span></div>",
+                    input: "text",
+                    showCancelButton: true,
+                    confirmButtonText: "Guardar",
+                    cancelButtonText: "Cancelar",
+                }).then(resultado => {
+                    if (resultado.value) {
+                        let mot = resultado.value;
+                        $.ajax({
             type:"POST",
             url:"../metodosAjax/save-usuarios.php",
             data:{valor:id},
@@ -105,6 +141,13 @@ header("location:login.php");
              mostrarMensaje('Eliminado','success',null,"El registro eliminado satisfactoriamente ",true);
            }
          });
+                    }else{
+                        eliminar(ide,nom,ape,r);
+                         }
+                });
+            }
+        });
+          
         }
         function validar_email(c) 
         {
@@ -194,7 +237,7 @@ header("location:login.php");
                         </i>
                       </button>
                       &nbsp;&nbsp;
-                      <a href="#" class="material-control tooltips-general" required="" maxlength="50" data-toggle="tooltip" data-placement="top" title="Eliminar" onclick="eliminar(<?php echo $fila->id?>)">
+                      <a href="#" class="material-control tooltips-general" required="" maxlength="50" data-toggle="tooltip" data-placement="top" title="Eliminar" onclick="eliminar(<?php echo $fila->id?>,<?php echo " '".$fila->nombre."' "?>,<?php echo " '".$fila->apellido."' "?>,<?php echo " '".$fila->rol."' "?>)">
                         <i class="zmdi zmdi-delete" style="color: #F91D0B;"></i>
                       </a>
                       &nbsp;&nbsp;

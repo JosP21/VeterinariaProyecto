@@ -79,7 +79,7 @@ if(isset($_POST['proveedor']) && isset($_POST['fechacompra']) && isset($_POST['c
 		                                             }
   //SI NO EXISTE SE CREA
 		if($existedistribuidora==0){
-			$InserDisBase="INSERT into distribuidora(nombre) VALUES ('$dstribuidora')";
+			$InserDisBase="INSERT into distribuidora(nombre) VALUES ('$distribuidora')";
 			$resultadoInserDis =  $conexion->query($InserDisBase);
 		                            }
 

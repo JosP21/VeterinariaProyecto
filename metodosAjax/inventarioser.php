@@ -5,7 +5,9 @@ if (!empty($_POST['nombres']) && !empty($_POST['precios'])){
   $nombre=$_POST['nombres'];
   $precio=$_POST['precios'];
   $idS=$_POST['idprov'];
- 
+ $accion="Modificar";
+        $fecha = date("Y-m-d");
+        $mot=$_POST['motivo'];
 
   if (!empty($nombre)) {
     $cosulta="UPDATE `servicios` SET `nombre`='".$nombre."',`precio`='".$precio."' where id_servicio='".$idS."'";
@@ -14,6 +16,8 @@ if (!empty($_POST['nombres']) && !empty($_POST['precios'])){
   }
   $resultado = $conexion->query($cosulta);
   if($resultado){
+     $consult="INSERT INTO `bitservicios`(`id_bitServicio`, `servicio`, `precio`, `fecha_realizacion`, `motivo`, `accion`) VALUES (null,'".$nombre."','".$precio."','".$fecha."','".$mot."','".$accion."')";
+                    $resul = $conexion->query($consult);
     $result=$conexion->query("SELECT
 servicios.id_servicio as id,
 servicios.nombre as nombre,
@@ -55,6 +59,21 @@ servicios");
   }
 }else if(!empty($_POST['valor'])){
   $id= $_POST['valor'];
+  $fecha = date("Y-m-d");
+        $mot=$_POST['motivo'];
+        $accion="Eliminar";
+        $cosulta="SELECT
+servicios.nombre as n,
+servicios.precio as p
+FROM
+servicios where servicios.id_servicio='".$id."'";
+            $resultado = $conexion->query($cosulta);
+            if($resultado){
+              if($fila = $resultado->fetch_object()){
+                $consult="INSERT INTO `bitservicios`(`id_bitServicio`, `servicio`, `precio`, `fecha_realizacion`, `motivo`, `accion`) VALUES (null,'".$fila->n."','".$fila->p."','".$fecha."','".$mot."','".$accion."')";
+                    $resul = $conexion->query($consult);
+              }
+        }
   $result=$conexion->query("DELETE FROM `servicios` WHERE id_servicio='".$id."'");
   if($result){
     $resulta=$conexion->query("SELECT

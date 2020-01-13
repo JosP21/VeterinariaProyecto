@@ -3,7 +3,7 @@
 session_start();
 $x=0;
 foreach ($_SESSION["carrito"] as $indi) {
-$x = 1;
+	$x = 1;
 }
 if ($x==0) {
 	header("Location: ../from/servicios.php?status=4");
@@ -27,9 +27,18 @@ if ($x==0) {
 		header("Location: ../from/servicios.php?status=6");
 	}
 
+	$sentencia = $base_de_datos->prepare("INSERT INTO citas(id_cita, fecha, hora, estado, id_empleado, id_mascota) VALUES (?, ?, ?, ?, ?, ?);");
+	$sentencia->execute([null,$empleados->hoy,'','',$empleados->id_Empleado,$expediente->id_mascota]);
+
+	$sentencia = $base_de_datos->prepare("SELECT id_cita FROM citas ORDER BY id_cita DESC LIMIT 1;");
+	$sentencia->execute();
+	$resultado = $sentencia->fetch(PDO::FETCH_OBJ);
+
+	$idCita = $resultado === false ? 1 : $resultado->id_cita;
+
 	$base_de_datos->beginTransaction();
-	$sentencia = $base_de_datos->prepare("INSERT INTO citas(id_cita, fecha, hora, prioridad, id_empleado, id_mascota, id_servicio) VALUES (?, ?, ?, ?, ?, ?, ?);"); foreach ($_SESSION["carrito"] as $servicio) {
-		$sentencia->execute([null,$empleados->hoy,'',1,$empleados->id_Empleado,$expediente->id_mascota,$servicio->id_servicio]);
+	$sentencia = $base_de_datos->prepare("INSERT INTO detservicio(id_cita, id_servicio) VALUES (?, ?);"); foreach ($_SESSION["carrito"] as $servicio) {
+		$sentencia->execute([$idCita,$servicio->id_servicio]);
 	}
 	$base_de_datos->commit();
 

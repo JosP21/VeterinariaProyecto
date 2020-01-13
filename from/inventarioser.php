@@ -55,15 +55,28 @@ function Modificar(){
        
            if(!nombre=="" && !precio==""){
              var datos=$("#frmumodificar").serialize();
-             $.ajax({
+             Swal.fire({
+                    title: "<div>Motivo por el cual desea hacer una modificacion a l servicio<span style='color: #182d7d;'>"+nombre+"</span></div>",
+                    input: "text",
+                    showCancelButton: true,
+                    confirmButtonText: "Guardar",
+                    cancelButtonText: "Cancelar",
+                }).then(resultado => {
+                    if (resultado.value) {
+                        let mot = resultado.value;
+                        $.ajax({
               type:"POST",
               url:"../metodosAjax/inventarioser.php",
-              data:datos,
+              data:{nombres:nombre,precios:precio,motivo:mot,idprov:document.getElementById('idprov').value},
               success:function(resp){
                document.getElementById('miTabla').innerHTML=resp;
                mostrarMensaje('Se Modificó','success',null,"El registro a sido modificado satisfactoriamente ",true);
              }
            });
+                    }else {
+                        Modificar();
+                    }
+                    });
 
            }
          }
@@ -81,7 +94,8 @@ function Modificar(){
         }
 
               function eliminar(id){
-                  swal({
+
+                  swal.fire({
                     title: 'Esta seguro?',
                     text: "Desea eliminar este registro",
                     type: 'warning',
@@ -91,15 +105,28 @@ function Modificar(){
                     confirmButtonText: 'Si, eliminar!',
                 }).then((result)=>{
                     if(result.value){
+                      Swal.fire({
+                    title: "<div>Motivo por el cual desea eliminar al servicio </div>",
+                    input: "text",
+                    showCancelButton: true,
+                    confirmButtonText: "Guardar",
+                    cancelButtonText: "Cancelar",
+                }).then(resultado => {
+                    if (resultado.value) {
+                        let mot = resultado.value;
                         $.ajax({
                     type:"POST",
                     url:"../metodosAjax/inventarioser.php",
-                    data:{valor:id},
+                    data:{valor:id,motivo:mot},
                     success:function(resp){
                          document.getElementById('miTabla').innerHTML=resp;
                          mostrarMensaje('Se Elimino','success',null,"El registro fue eliminado satisfactoriamente",true);
                     }
                    });
+                    }else {
+                        Modificar();
+                    }
+                    });
                     }
                 })
         }

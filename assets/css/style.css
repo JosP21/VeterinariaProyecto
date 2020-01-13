@@ -757,6 +757,40 @@ input.material-control:focus ~ .highlight {
   border-bottom: 8px solid #FA5858;
 }
 
+/**/
+[btnf-data-title] {
+ /* outline: red dotted 1px; /*optional styling*/
+  /*font-size: 30px; /*optional styling*/
+  
+  position: relative;
+  cursor: pointer;
+}
+
+[btnf-data-title]:hover::before {
+  content: attr(btnf-data-title);
+  position: absolute;
+  bottom: -33px;
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 5px;
+  background: #10568A;
+  color: #fff;
+  font-size: 12px;
+  font-family: sans-serif;
+  white-space: nowrap;
+}
+[btnf-data-title]:hover::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 8px;
+  display: inline-block;
+  color: #fff;
+  border: 8px solid transparent;  
+  border-bottom: 8px solid #FA5858;
+}
+
+
 
 [btnm-data-title] {
   /*outline: red dotted 1px; /*optional styling*/

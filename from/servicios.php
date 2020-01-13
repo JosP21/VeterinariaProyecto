@@ -1,20 +1,12 @@
-<<<<<<< HEAD
-<?php session_start();
-  if($_SESSION["logeado"] == false) {
-header("location:login.php");
-  }
-  ?>
-=======
 
 <?php session_start();
 if($_SESSION["logeado"] == false) {
     header("location:login.php");
 }
-if(!isset($_SESSION["carrito"])){$_SESSION["carrito"];}
+if(!isset($_SESSION["carrito"])){$_SESSION["carrito"]=[];}
 ?>
 <?php $precio = 0;
 ?>
->>>>>>> d93b025525b966cdf47a36eab2484f480caf1a90
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -34,7 +26,7 @@ if(!isset($_SESSION["carrito"])){$_SESSION["carrito"];}
     <script src="../assets/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="../assets/css/style.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
- <script>window.jQuery || document.write('<script src="../assets/js/jquery-1.11.2.min.js"><\/script>')</script>
+    <script>window.jQuery || document.write('<script src="../assets/js/jquery-1.11.2.min.js"><\/script>')</script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8/dist/sweetalert2.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@8/dist/sweetalert2.min.css" id="theme-styles">
     <script src="../assets/js/modernizr.js"></script>

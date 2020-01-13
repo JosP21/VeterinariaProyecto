@@ -5,7 +5,7 @@ include"../config/conexion.php";
 if(isset($_POST['factura']) && isset($_POST['cantidad']) && isset($_POST['producto'])){
 
 
-	$factura = $_POST['factura'];
+	$facturaval = $_POST['factura'];
 	$cantidad = $_POST['cantidad']; //TABLA
 	$producto= $_POST['producto']; //TABLA--
 	$copia=$cantidad;
@@ -19,9 +19,9 @@ if(isset($_POST['factura']) && isset($_POST['cantidad']) && isset($_POST['produc
 
 	//VENTA
 
-	//$facturas="SELECT * FROM `ventas` WHERE `num_factura`='$factura'";
+	$facturas="SELECT * FROM `ventas` WHERE `num_factura`='$facturaval'";
 	//$facturas="SELECT * FROM `ventas` ORDER BY `id_venta` ASC";
-	$facturas="SELECT * FROM `ventas`";
+	//$facturas="SELECT * FROM `ventas`";
 	$resultadoVenta =  $conexion->query($facturas);
     
     while($ven=$resultadoVenta->fetch_object()){
@@ -61,6 +61,14 @@ if(isset($_POST['factura']) && isset($_POST['cantidad']) && isset($_POST['produc
 		}
 	}
 
+    $ventasG="SELECT * FROM `ventas` WHERE `num_factura`='$facturaval'";
+	//$facturas="SELECT * FROM `ventas` ORDER BY `id_venta` ASC";
+	//$facturas="SELECT * FROM `ventas`";
+	$resultadoBase =  $conexion->query($ventasG);
+    
+    while($ventafa=$resultadoBase->fetch_object()){
+         $numventa=$ventafa->id_venta;
+    }
 
 
 	$InsertDetalle="INSERT into detalleventa(id_venta, cantVenta, id_detProducto) VALUES ('$numventa', '$cantidad','$iddetalle')";

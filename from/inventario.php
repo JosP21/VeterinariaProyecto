@@ -36,6 +36,7 @@ header("location:login.php");
     <script type="text/javascript" src="../assets/datatable/js/dataTables.responsive.min.js"></script>
     <script type="text/javascript" src="../assets/datatable/datatable.js"></script>
     <script type="text/javascript">
+        var tinventario="<thead><tr><th>Nombre Producto</th><th>Existencia</th><th>Fecha Vencimiento</th> <th>Precio de Compra</th><th>Precio de Venta</th><th>Acción</th> </tr></thead><tbody></tbody>";
         function editar(id){
                   $.ajax({
                     type:"POST",
@@ -96,6 +97,75 @@ header("location:login.php");
                             }
                         });
         }
+        function general(){
+            var inventario="General";
+            $.ajax({
+                            type:"POST",
+                            url:"../metodosAjax/inventario.php",
+                            data:{inv:inventario},
+                            success:function(resp){
+                                document.getElementById('miTabla').innerHTML=resp;
+                                $("#filtrado").hide();
+                            }
+                        });
+        }
+        function proveedor(){
+            var inventario="Proveedor";
+            $.ajax({
+                            type:"POST",
+                            url:"../metodosAjax/inventario.php",
+                            data:{invp:inventario},
+                            success:function(resp){
+                                document.getElementById('filtrado').innerHTML=resp;
+                                document.getElementById('miTabla').innerHTML=tinventario;
+                                $("#filtrado").show();
+                            }
+                        });
+        }
+        function fechas(){
+            var inventario="Fechas";
+            $.ajax({
+                            type:"POST",
+                            url:"../metodosAjax/inventario.php",
+                            data:{invf:inventario},
+                            success:function(resp){
+                                document.getElementById('filtrado').innerHTML=resp;
+                                document.getElementById('miTabla').innerHTML=tinventario;
+                                $("#filtrado").show();
+                            }
+                        });
+        }
+
+        function categoria(){
+            var inventario="Categoria";
+            $.ajax({
+                            type:"POST",
+                            url:"../metodosAjax/inventario.php",
+                            data:{invc:inventario},
+                            success:function(resp){
+                                document.getElementById('filtrado').innerHTML=resp;
+                                document.getElementById('miTabla').innerHTML=tinventario;
+                                $("#filtrado").show();
+                            }
+                        });
+
+        }
+        function marca(){
+            var inventario="Marca";
+            $.ajax({
+                            type:"POST",
+                            url:"../metodosAjax/inventario.php",
+                            data:{invm:inventario},
+                            success:function(resp){
+                                document.getElementById('filtrado').innerHTML=resp;
+                                document.getElementById('miTabla').innerHTML=tinventario;
+                                $("#filtrado").show();
+                            }
+                        });
+        }
+        function inicio(){
+            $("#filtrado").hide();
+        }
     </script>
 
 </head>
@@ -104,7 +174,7 @@ header("location:login.php");
 
 
 
-<body onload="mensaje()">
+<body onload="mensaje();inicio();">
     <?php
     include "../from/menu.php"
     ?>
@@ -124,7 +194,37 @@ header("location:login.php");
         <div class="container-fluid"  style="margin: 20px 0;">
         </div>
         <div class="container-fluid">
-             <div class="row">
+            <div class="container-fluid"  style="margin: 20px 0;"></div>
+                <form id="frmaccion" name="frmaccion" method="post" action="">
+                <div style="margin-top: -2%;justify-content: center;" class="col-sm-8 col-sm-offset-2">
+                <fieldset>
+                  <legend>VER INVENTARIO POR:</legend>
+                  <div>
+                    <center>
+                      <div class="contenedorad">
+                        <div class="radio">
+                         <input type="radio" name="accion" id="general" value="General">
+                         <label for="general" onclick="general()">General</label>
+                         <input type="radio" name="accion" id="proveedor" value="Proveedor">
+                         <label for="proveedor" onclick="proveedor()">Proveedor</label>
+                         <input type="radio" name="accion" id="fechas" value="Fechas">
+                         <label for="fechas" onclick="fechas()">Fechas</label>
+                         <input type="radio" name="accion" id="categoria" value="Categoria">
+                         <label for="categoria" onclick="categoria()">Categoria</label>
+                         <input type="radio" name="accion" id="marca" value="Marca">
+                         <label for="marca" onclick="marca()">Marca</label>
+                       </div>
+                     </div>
+                   </center>
+                 </div>
+               </fieldset>
+               <div id="filtrado">
+           </div>
+             </div> 
+                </form>
+                <div class="container-fluid"  style="margin: 20px 0;">
+        </div>
+             <div class="row" id="inventario">
                     <!--ListaProductos-->
                     <div class="container-fluid">
                 <div class="div-table">
@@ -139,45 +239,8 @@ header("location:login.php");
                               
                               <th>Acción</th>
                             </tr>
-                       </thead>
-
-                       
-                          <tbody>
-                            <?php
-                            include "../config/conexion.php";
-                            $result=$conexion->query("SELECT productos.nombre as producto,
-                                sum(detproductos.cantidCompra) as existencia,
-                                detproductos.fechaCaduc as fecha,
-                                detproductos.precCompra as precioC,
-                                detproductos.precVenta as precioV,
-                                productos.id_producto as id
-                                FROM
-                                productos
-                                INNER JOIN detproductos ON detproductos.id_producto = productos.id_producto GROUP BY productos.nombre");
-                            if($result){
-                                while($fila = $result->fetch_object()){ ?>
-                                <tr>
-                                <td><?php echo $fila->producto ?></td>
-                                <td><?php echo $fila->existencia ?></td>
-                                <td><?php echo date("d-m-Y", strtotime($fila->fecha))?></td>
-                                <td><?php echo $fila->precioC ?></td>
-                                <td><?php echo $fila->precioV ?></td>
-                                <td>
-                                    <a href="#" data-toggle= "modal" data-target= "#modificarProducto" class="material-control tooltips-general" required="" maxlength="50" data-toggle="tooltip" data-placement="top" title="Editar" onclick="editar(<?php echo $fila->id?>)">
-                                        <i class="zmdi zmdi-edit" style="color: #31920D;">
-                                        </i>
-                                    </a>
-                                    &nbsp;&nbsp;
-                                    <a href="#" class="material-control tooltips-general" required="" maxlength="50" data-toggle="tooltip" data-placement="top" title="Eliminar" onclick="eliminar(<?php echo $fila->id?>)">
-                                        <i class="zmdi zmdi-delete" style="color: #F91D0B;"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            <?php
-        }
-}
-?>
-</tbody>
+                          </thead>
+                          <tbody></tbody>
                     </table>
                 </div><div style="margin: 6.5% 0;"></div>
             </div>
@@ -210,11 +273,88 @@ header("location:login.php");
                     </div>
                 </div>
             </div>
-         
         
         <footer class="footer full-reset">
             <div class="footer-copyright full-reset all-tittles"><center>Universidad de EL Salvador-FMP 2019</center></div>
         </footer>
     </div>
+    <script type="text/javascript">
+        function prove()
+            {
+            $("input[name=proveedor]").change(function() {
+                var value=$("input[name=proveedor]").val();
+                inventarioP(value);
+                return 0;
+                });
+            }
+            function cat()
+            {
+            $("input[name=categoria]").change(function() {
+                var value=$("input[name=categoria]").val();
+                inventarioC(value);
+                return 0;
+                });
+            }
+            function mar()
+            {
+            $("input[name=marca]").change(function() {
+                var value=$("input[name=marca]").val();
+                inventarioM(value);
+                return 0;
+                });
+            }
+     function inventarioP(proveedor){
+             $.ajax({
+                    type:"POST",
+                    url:"../metodosAjax/inventario.php",
+                    data:{inventarioproveedor:proveedor},
+                    success:function(resp){
+                        document.getElementById('miTabla').innerHTML=resp;
+                    }
+                   });
+        }
+        function inventarioM(m){
+             $.ajax({
+                    type:"POST",
+                    url:"../metodosAjax/inventario.php",
+                    data:{inventarioMarca:m},
+                    success:function(resp){
+                        document.getElementById('miTabla').innerHTML=resp;
+                    }
+                   });
+        }
+        function inventarioC(c){
+             $.ajax({
+                    type:"POST",
+                    url:"../metodosAjax/inventario.php",
+                    data:{inventarioCategoria:c},
+                    success:function(resp){
+                        document.getElementById('miTabla').innerHTML=resp;
+                    }
+                   });
+        }
+        function invDesde(){
+    $.ajax({
+        type:"POST",
+        url:"../metodosAjax/inventario.php",
+        data:{fdesde:document.getElementById("desde").value,fhasta:document.getElementById("hasta").value},
+        success:function(resp){
+            //alert(resp);
+                document.getElementById('miTabla').innerHTML=resp;
+        }
+    });
+}
+function invHasta(){
+    $.ajax({
+        type:"POST",
+        url:"../metodosAjax/inventario.php",
+        data:{fdesde:document.getElementById("desde").value,fhasta:document.getElementById("hasta").value},
+        success:function(resp){
+            //alert(resp);
+                document.getElementById('miTabla').innerHTML=resp;
+        }
+    });
+}
+    </script>
 </body>
 </html>

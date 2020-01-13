@@ -72,6 +72,31 @@ die();
 	}
 	$resultado = $conexion->query($cosulta);
 	if($resultado){
+		$fecha = date("Y-m-d");
+        $mot=$_POST['motivo'];
+        $accion="Modificar";
+        $cosulta="SELECT
+empleados.DUI as dui,
+empleados.nombres as nombre,
+empleados.apellidos as apellido,
+empleados.sexo as sexo,
+empleados.direccion as direccion,
+empleados.telefono as tel,
+empleados.fecha_nac as fech,
+empleados.nombre_usuario as usuario,
+empleados.contrasena as contra,
+empleados.rol as rol,
+empleados.foto as foto,
+empleados.correoElectronico
+FROM
+empleados WHERE empleados.nombres='$nombre' && empleados.apellidos='$apellido'";
+            $resultado = $conexion->query($cosulta);
+            if($resultado){
+              if($fila = $resultado->fetch_object()){
+                $consult="INSERT INTO `bitpersonal`(`id_bitPersonal`, `dui`, `nombre`, `apellido`, `sexo`, `direccion`, `telefono`, `fechaNac`, `nombreU`, `contrasena`, `rol`, `foto`, `correo`, `motivo`, `fecha`, `accion`) VALUES (null,'".$fila->dui."','".$nombre."','".$apellido."','".$fila->sexo."','".$direccion."','".$telefono."','".$fila->fech."','".$fila->usuario."','".$fila->contra."','".$rol."','".$fila->foto."','".$email."','".$mot."','".$fecha."','".$accion."')";
+                    $resul = $conexion->query($consult);
+              }
+        }
 		$result=$conexion->query("SELECT
 			e.id_Empleado as id,
 			e.DUI as dui,
@@ -131,6 +156,31 @@ die();
 	}
 }else if(!empty($_POST['valor'])){
 	$id= $_POST['valor'];
+	$fecha = date("Y-m-d");
+        $mot=$_POST['motivo'];
+        $accion="Eliminar";
+        $cosulta="SELECT
+empleados.DUI as dui,
+empleados.nombres as nombre,
+empleados.apellidos as apellido,
+empleados.sexo as sexo,
+empleados.direccion as direccion,
+empleados.telefono as tel,
+empleados.fecha_nac as fech,
+empleados.nombre_usuario as usuario,
+empleados.contrasena as contra,
+empleados.rol as rol,
+empleados.foto as foto,
+empleados.correoElectronico as email
+FROM
+empleados WHERE empleados.id_Empleado='".$id."'";
+            $resultado = $conexion->query($cosulta);
+            if($resultado){
+              if($fila = $resultado->fetch_object()){
+                $consult="INSERT INTO `bitpersonal`(`id_bitPersonal`, `dui`, `nombre`, `apellido`, `sexo`, `direccion`, `telefono`, `fechaNac`, `nombreU`, `contrasena`, `rol`, `foto`, `correo`, `motivo`, `fecha`, `accion`) VALUES (null,'".$fila->dui."','".$fila->nombre."','".$fila->apellido."','".$fila->sexo."','".$fila->direccion."','".$fila->tel."','".$fila->fech."','".$fila->usuario."','".$fila->contra."','".$fila->rol."','".$fila->foto."','".$fila->email."','".$mot."','".$fecha."','".$accion."')";
+                    $resul = $conexion->query($consult);
+              }
+        }
 	$result=$conexion->query("DELETE FROM `empleados` WHERE id_Empleado='".$id."'");
 	if($result){
 		$resulta=$conexion->query("SELECT

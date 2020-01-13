@@ -1,6 +1,8 @@
-<!-- 
-* Copyright 2016 Carlos Eduardo Alfaro Orellana
--->
+<?php session_start();
+  if($_SESSION["logeado"] == false) {
+header("location:login.php");
+  }
+  ?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -57,16 +59,28 @@
                  alertify.error('<strong style="font-size: 14px;font-weight: bold;">Error</strong>: correo no valido', 'success', 5, function(){})
              }
              if(!proveedor=="" && !empresa=="" && !tel=="" & (!correo=="" && validar_email(correo))){
-                   var datos=$("#frmmodificar").serialize();
-                   $.ajax({
-                    type:"POST",
-                    url:"../metodosAjax/guardar-proveedor.php",
-                    data:datos,
-                    success:function(resp){
-                       document.getElementById('miTabla').innerHTML=resp;
-                       mostrarMensaje('Se Modifico','success',null,"El registro a sido modificado satisfactoriamente ",true);
+                   Swal.fire({
+                    title: "<div>Motivo por el cual desea hacer una modificacion a <span style='color: #182d7d;'>"+proveedor+"</span> de la empresa <span style='color: #182d7d;'>"+empresa+"</span></div>",
+                    input: "text",
+                    showCancelButton: true,
+                    confirmButtonText: "Guardar",
+                    cancelButtonText: "Cancelar",
+                }).then(resultado => {
+                    if (resultado.value) {
+                        let mot = resultado.value;
+                        $.ajax({
+                            type:"POST",
+                            url:"../metodosAjax/guardar-proveedor.php",
+                            data:{empresam:empresa,proveedorm:proveedor,correom:correo,telefonom:tel,idprov:document.getElementById('idprov').value,motivo:mot},
+                            success:function(resp){
+                                document.getElementById('miTabla').innerHTML=resp;
+                                mostrarMensaje('Se Modifico','success',null,"El registro a sido modificado satisfactoriamente ",true);
+                            }
+                        });
+                    }else {
+                        Modificar();
                     }
-                   });
+                    });
                   
             }
         }
@@ -80,8 +94,11 @@
                     }
                    });
         }
-        function eliminar(id){
-                  swal({
+        function eliminar(id,proveedor,empresa){   
+        var idp=id;
+        var pro=proveedor;
+        var emp=empresa;                       
+            swal.fire({
                     title: 'Esta seguro?',
                     text: "Desea eliminar este registro",
                     type: 'warning',
@@ -91,17 +108,30 @@
                     confirmButtonText: 'Si, eliminar!',
                 }).then((result)=>{
                     if(result.value){
+                        Swal.fire({
+                    title: "<div>Motivo por el cual desea eliminar a <span style='color: #182d7d;'>"+proveedor+"</span> de la empresa <span style='color: #182d7d;'>"+empresa+"</span></div>",
+                    input: "text",
+                    showCancelButton: true,
+                    confirmButtonText: "Guardar",
+                    cancelButtonText: "Cancelar",
+                }).then(resultado => {
+                    if (resultado.value) {
+                        let mot = resultado.value;
                         $.ajax({
-                    type:"POST",
-                    url:"../metodosAjax/guardar-proveedor.php",
-                    data:{valor:id},
-                    success:function(resp){
-                         document.getElementById('miTabla').innerHTML=resp;
-                         mostrarMensaje('Se Elimino','success',null,"El registro fue eliminado satisfactoriamente",true);
-                    }
-                   });
-                    }
-                })
+                            type:"POST",
+                            url:"../metodosAjax/guardar-proveedor.php",
+                            data:{valor:id,motivo:mot},
+                            success:function(resp){
+                                document.getElementById('miTabla').innerHTML=resp;
+                                mostrarMensaje('Se Elimino','success',null,"El registro fue eliminado satisfactoriamente",true);
+                            }
+                        });
+                    }else{
+                        eliminar(idp,pro,emp);
+                         }
+                });
+            }
+        });
         }
         function validar_email(c) 
      {
@@ -171,7 +201,7 @@
                                         </i>
                                     </a>
                                     &nbsp;&nbsp;
-                                    <a href="#" class="material-control tooltips-general" required="" maxlength="50" data-toggle="tooltip" data-placement="top" title="Eliminar" onclick="eliminar(<?php echo $fila->id?>)">
+                                    <a href="#" class="material-control tooltips-general" required="" maxlength="50" data-toggle="tooltip" data-placement="top" title="Eliminar" onclick="eliminar(<?php echo $fila->id?>,<?php echo "'".$fila->nombre."'"?>,<?php echo "'".$fila->empresa."'"?>)">
                                         <i class="zmdi zmdi-delete" style="color: #F91D0B;"></i>
                                     </a>
                                 <?php }
@@ -202,35 +232,7 @@
                             </button>
                         </div>
                         <div class="modal-body" id="datos">
-                            <div class="container-fluid">
-                               <div class="col-xs-12 col-sm-offset-0">
-                                    <div class="title-flat-form title-flat-blue">Modificar</div>
-                                    <form id="frmmodificar" name="frmmodificar" method="post" action="">
-                            <div class="col-xs-5 col-sm-5 col-sm-offset-1" style="margin-left: 9%;">
-                            <div class="group-material">
-                                <input id="empresam" name="empresam" type="text" class="material-control tooltips-general" placeholder="Nombre..." required="" data-toggle="tooltip" data-placement="top" title="Solo letras" onkeypress="return sololetras(event);">
-                                <label>Nombre de la empresa</label>
-                            </div></div><div class="col-xs-5 col-sm-5 col-sm-offset-0">
-                        <div class="group-material">
-                                <input id="proveedorm" name="proveedorm" type="text" class="material-control tooltips-general" placeholder="Proveedor..." required="" data-toggle="tooltip" data-placement="top" title="Solo letras" onkeypress="return sololetras(event);">
-                                <label>Nombre</label>
-                            </div></div>
-                            <script type="text/javascript">
-                                $(document).ready(function(){
-                                 $("#telefonom").mask("0000-0000");
-                             });
-                            </script>
-                            <div class="col-xs-5 col-sm-5 col-sm-offset-1" style="margin-left: 9%;">
-                            <div class="group-material">
-                                <input id="telefonom" name="telefonom" type="text" class="material-control tooltips-general" placeholder="####-####" required="" data-toggle="tooltip" maxlength="9" data-placement="top" title="Numero de celular valido" onkeypress="return solonumero(event);">
-                                <label>Telefono</label>
-                            </div></div><div class="col-xs-5 col-sm-5 col-sm-offset-0">
-                            <div class="group-material">
-                                <input id="correom" name="correom" type="text" class="material-control tooltips-general" placeholder="ejemplo@gmail.com" required="" data-toggle="tooltip" data-placement="top" title="Digite un Correo valido">
-                                <label>Correo</label>
-                            </div></div></form>
-                        </div>
-                    </div>
+                            
                         </div>
                         <div class="modal-footer">
                             <center>

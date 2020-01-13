@@ -78,24 +78,27 @@ if(!empty($_POST['accion'])){
                                 <div id="horafl">
                                 <div style="margin-top: -13%;" class="col-sm-4 col-sm-offset-6">
                                 <div class="group-material" id="propietarioG">
-                                    <input type="time" name="hora" id="hora" class="material-control tooltips-general" data-min-length="1" data-selection-required="true" data-toggle="tooltip" data-placement="top" title="" value="<?php echo date('h:i')?>" data-original-title=""><label>Hora</label>
+                                    <input type="time" name="hora" id="hora" class="material-control tooltips-general" data-min-length="1" data-selection-required="true" data-toggle="tooltip" data-placement="top" title="" value="<?php echo date('H:i')?>" data-original-title=""><label>Hora</label>
                                 </div></div>
                                 </div>
                             <p class="text-center" style="margin-top: 30%">
                                 <button type="button" onclick="guardar()" class="btn btn-primary"><i class="zmdi zmdi-floppy"></i> &nbsp;&nbsp; Guardar</button>
-                                <button type="reset" class="btn btn-info" onclick="cancelar()" style="margin-right: 20px;"><i class="zmdi zmdi-refresh-alt"></i> &nbsp;&nbsp; Cancelar</button>
+                                <button type="reset" class="btn btn-info" onclick="location.reload()" style="margin-right: 20px;"><i class="zmdi zmdi-refresh-alt"></i> &nbsp;&nbsp; Cancelar</button>
                             </p> 
   <?php  return 0;
   }
   if($variable=="Servicio"){?>
+    <div id="idcitaSer">
+      <input type="hidden" name="idcitSer" id="idcitSer" value="">
+    </div>
                                 <div class="col-sm-3 col-sm-offset-0">
-                                <div class="group-material" id="propietarioG">
-                                    <input type="date" name="fecha" id="fecha" class="material-control tooltips-general"  required="" data-min-length="1" data-selection-required="true" data-toggle="tooltip" data-placement="top" onchange="validarhoraS()" title="" value="" data-original-title=""><label>Fecha</label>
+                                <div class="group-material">
+                                    <input type="date" name="fechaS" id="fechaS" class="material-control tooltips-general"  required="" data-min-length="1" data-selection-required="true" data-toggle="tooltip" data-placement="top" onchange="validarhoraS()" min="<?php echo date('Y-m-d');?>" value="<?php echo date('Y-m-d');?>" title="" value="" data-original-title=""><label>Fecha</label>
                                 </div></div>
                                 <div id="horafl1">
                                 <div style="margin-top: -8.5%;margin-left: 68%;" class="col-sm-2 col-sm-offset-0">
-                                <div class="group-material" id="propietarioG">
-                                    <input type="time" name="hora" id="hora" class="material-control tooltips-general" data-min-length="1" data-selection-required="true" data-toggle="tooltip" data-placement="top" title="" data-original-title=""><label>Hora</label>
+                                <div class="group-material">
+                                    <input type="time" name="horas" id="horas" class="material-control tooltips-general" data-min-length="1" data-selection-required="true" data-toggle="tooltip" value="<?php echo date('H:i')?>" data-placement="top" title="" data-original-title=""><label>Hora</label>
                                 </div></div>
                                 </div>
                                
@@ -104,51 +107,109 @@ if(!empty($_POST['accion'])){
 }
 
 if(!empty($_POST['fdato'])){
-  $cosulta="SELECT MAX(citas.id_cita) as id,citas.fecha as fecha,citas.hora as hora FROM citas where citas.fecha='".$_POST['fdato']."' and citas.id_cita=(SELECT MAX(citas.id_cita) from citas)";
+  $cosulta="SELECT MAX(citas.hora) as id,citas.fecha as fecha,citas.hora as hora FROM citas where citas.fecha='".$_POST['fdato']."' and citas.hora=(SELECT MAX(citas.hora) from citas where citas.fecha='".$_POST['fdato']."')";
        $resultado = $conexion->query($cosulta);
        if($resultado){
         if($fila = $resultado->fetch_object()){
-          if($fila->fecha==null){?>
-            <div style="margin-top: -13%;" class="col-sm-4 col-sm-offset-6">
-                                <div class="group-material" id="propietarioG">
-                                    <input type="time" name="hora" id="hora" class="material-control tooltips-general" data-min-length="1" data-selection-required="true" data-toggle="tooltip" data-placement="top" title="" value="<?php echo date('h:i',strtotime('08:00'))?>" data-original-title=""><label>Hora</label>
+          if($fila->fecha==null){
+            $hora1 = date('H:i');
+            $hora2 = date('H:i',strtotime("08:00"));
+            if($hora1<=$hora2){?>
+  <div style="margin-top: -13%;" class="col-sm-4 col-sm-offset-6">
+                                <div class="group-material">
+                                    <input type="time" name="hora" id="hora" class="material-control tooltips-general" data-min-length="1" data-selection-required="true" data-toggle="tooltip" value="<?php echo $hora2?>" data-placement="top" title="" data-original-title=""><label>Hora</label>
                                 </div></div>
-            <?php
-          }else{
+  <?php
+   }else{?>
+    <div style="margin-top: -13%;" class="col-sm-4 col-sm-offset-6">
+                                <div class="group-material">
+                                    <input type="time" name="hora" id="hora" class="material-control tooltips-general" data-min-length="1" data-selection-required="true" data-toggle="tooltip" value="<?php echo $hora1?>" data-placement="top" title="" data-original-title=""><label>Hora</label>
+                                </div></div>
+    <?php
+   }}else{
 
-          $date = date('h:i',strtotime($fila->hora));
+          $date = date('H:i',strtotime($fila->hora));
           $NuevaFecha = strtotime ( '+30 minute' , strtotime ($date) ) ;
-          $hora = date ( 'h:i' , $NuevaFecha); ?>
-          <div style="margin-top: -13%;" class="col-sm-4 col-sm-offset-6">
-                                <div class="group-material" id="propietarioG">
-                                    <input type="time" name="hora" id="hora" class="material-control tooltips-general" data-min-length="1" data-selection-required="true" data-toggle="tooltip" data-placement="top" title="" value="<?php echo $hora?>" data-original-title=""><label>Hora</label>
+          $hora = date ( 'H:i' , $NuevaFecha); 
+          $hora1 = date('H:i');
+            $hora2 = date('H:i',strtotime($fila->hora));
+            if($hora1<=$hora2){
+              $date = date('H:i',strtotime($fila->hora));
+              $NuevaFecha = strtotime ( '+30 minute' , strtotime ($date) ) ;
+              $hora = date ( 'H:i' , $NuevaFecha); 
+              ?>
+  <div style="margin-top: -13%;" class="col-sm-4 col-sm-offset-6">
+                                <div class="group-material">
+                                    <input type="time" name="hora" id="hora" class="material-control tooltips-general" data-min-length="1" data-selection-required="true" data-toggle="tooltip" value="<?php echo $hora?>" data-placement="top" title="" data-original-title=""><label>Hora</label>
                                 </div></div>
-          <?php
+  <?php
+   }else{?>
+    <div style="margin-top: -13%;" class="col-sm-4 col-sm-offset-6">
+                                <div class="group-material">
+                                    <input type="time" name="hora" id="hora" class="material-control tooltips-general" data-min-length="1" data-selection-required="true" data-toggle="tooltip" value="<?php echo $hora1?>" data-placement="top" title="" data-original-title=""><label>Hora</label>
+                                </div></div>
+    <?php
+   }
         }
         }
       }
 }
 if(!empty($_POST['fdatos'])){
-  $cosulta="SELECT MAX(citas.id_cita) as id,citas.fecha as fecha,citas.hora as hora FROM citas where citas.fecha='".$_POST['fdatos']."' and citas.id_cita=(SELECT MAX(citas.id_cita) from citas) and citas.id_servicio is not null";
+ $cosulta="SELECT
+citas.fecha,
+citas.hora as hora,
+max(citas.hora)
+FROM
+detservicio
+INNER JOIN citas ON detservicio.id_cita = citas.id_cita
+WHERE citas.fecha='".$_POST['fdatos']."' and citas.hora=(SELECT
+max(citas.hora)
+FROM
+detservicio
+INNER JOIN citas ON detservicio.id_cita = citas.id_cita WHERE citas.fecha='".$_POST['fdatos']."')";
        $resultado = $conexion->query($cosulta);
        if($resultado){
         if($fila = $resultado->fetch_object()){
-          if($fila->fecha==null){?>
-            <div style="margin-top: -13%;" class="col-sm-4 col-sm-offset-6">
-                                <div class="group-material" id="propietarioG">
-                                    <input type="time" name="hora" id="hora" class="material-control tooltips-general" data-min-length="1" data-selection-required="true" data-toggle="tooltip" data-placement="top" title="" value="<?php echo date('h:i',strtotime('08:00'))?>" data-original-title=""><label>Hora</label>
+          if($fila->fecha==null){
+            $horas1 = date('H:i');
+$horas2 = date('H:i',strtotime("08:00"));
+if($horas1<=$horas2){?>
+  <div style="margin-top: -8.5%;margin-left: 68%;" class="col-sm-2 col-sm-offset-0">
+                                <div class="group-material">
+                                    <input type="time" name="horas" id="horas" class="material-control tooltips-general" data-min-length="1" data-selection-required="true" data-toggle="tooltip" value="<?php echo $horas2?>" data-placement="top" title="" data-original-title=""><label>Hora</label>
                                 </div></div>
-            <?php
+  <?php
+   }else{?>
+    <div style="margin-top: -8.5%;margin-left: 68%;" class="col-sm-2 col-sm-offset-0">
+                                <div class="group-material">
+                                    <input type="time" name="horas" id="horas" class="material-control tooltips-general" data-min-length="1" data-selection-required="true" data-toggle="tooltip" value="<?php echo $horas1?>" data-placement="top" title="" data-original-title=""><label>Hora</label>
+                                </div></div>
+    <?php
+   }
           }else{
 
-          $date = date('h:i',strtotime($fila->hora));
+          $date = date('H:i',strtotime($fila->hora));
           $NuevaFecha = strtotime ( '+30 minute' , strtotime ($date) ) ;
-          $hora = date ( 'h:i' , $NuevaFecha); ?>
-          <div style="margin-top: -13%;" class="col-sm-4 col-sm-offset-6">
-                                <div class="group-material" id="propietarioG">
-                                    <input type="time" name="hora" id="hora" class="material-control tooltips-general" data-min-length="1" data-selection-required="true" data-toggle="tooltip" data-placement="top" title="" value="<?php echo $hora?>" data-original-title=""><label>Hora</label>
+          $hora = date ( 'H:i' , $NuevaFecha); 
+          $horas1 = date('H:i');
+$horas2 = date('H:i',strtotime($fila->hora));
+if($horas1<=$horas2){
+  $date = date('H:i',strtotime($fila->hora));
+          $NuevaFecha = strtotime ( '+30 minute' , strtotime ($date) ) ;
+          $hor = date ( 'H:i' , $NuevaFecha); 
+  ?>
+  <div style="margin-top: -8.5%;margin-left: 68%;" class="col-sm-2 col-sm-offset-0">
+                                <div class="group-material">
+                                    <input type="time" name="horas" id="horas" class="material-control tooltips-general" data-min-length="1" data-selection-required="true" data-toggle="tooltip" value="<?php echo $hor?>" data-placement="top" title="" data-original-title=""><label>Hora</label>
                                 </div></div>
-          <?php
+  <?php
+   }else{?>
+    <div style="margin-top: -8.5%;margin-left: 68%;" class="col-sm-2 col-sm-offset-0">
+                                <div class="group-material">
+                                    <input type="time" name="horas" id="horas" class="material-control tooltips-general" data-min-length="1" data-selection-required="true" data-toggle="tooltip" value="<?php echo $horas1?>" data-placement="top" title="" data-original-title=""><label>Hora</label>
+                                </div></div>
+    <?php
+   }
         }
         }
       }
@@ -187,7 +248,6 @@ INNER JOIN citas ON citas.id_mascota = mascotas.id_mascota where mascotas.id_mas
             list($n1, $n2) = explode(' ', $fila->nomM);
             $mascota=$n1." ".$fila->alias." ".$n2;
             $propietario=$fila->nomP." ".$fila->apP;
-            //echo $propietario;
             ?>
             <input type='hidden' name='idCita' id='idCita' value='<?php echo $fila->idC?>'>
             <div style="margin-bottom: -20px;" class="col-xs-4 col-sm-3 col-sm-offset-0">
@@ -288,6 +348,7 @@ function actualizar(){
                                         INNER JOIN propietario ON mascotas.id_propietario = propietario.id_propietario
                                 INNER JOIN citas ON citas.id_mascota = mascotas.id_mascota WHERE citas.estado='Pendiente' && citas.fecha=CURDATE()
  ORDER BY citas.hora");
+  $primero=true;
                             if($resulta){?>
                               <thead>
                             <tr>
@@ -309,19 +370,28 @@ function actualizar(){
                                 <td><?php echo $mascota ?></td>
                                 <td><?php echo $nombrep ?></td>
                                 <td>
-                                    <a href="#" data-toggle= "modal" data-target= "#modificarConsulta" class="material-control" required="" maxlength="50"  btnm-data-title="Editar">
+                                    <a href="#" data-toggle= "modal" data-target= "#modificarConsulta" class="material-control" required="" onclick="modificarC(<?php echo " '".$fila->fecha."' "?>,<?php echo " '".$fila->idM."' "?>)" maxlength="50"  btnm-data-title="Editar" >
                                         <i class="zmdi zmdi-edit" style="color: #31920D;">
                                         </i>
                                     </a>
                                     &nbsp;&nbsp;
-                                    <a href="#" onclick="" class="material-control" required="" maxlength="50"btne-data-title="Eliminar">
+                                    <a href="#" onclick="eliminarcita(<?php echo $fila->idC?>,<?php echo " '".$fila->idM."' "?>,<?php echo " '".$nombrep."' "?>)" class="material-control" required="" maxlength="50"btne-data-title="Eliminar">
                                         <i class="zmdi zmdi-delete" style="color: #F91D0B;">
                                         </i>
                                     </a>
                                     &nbsp;&nbsp;
-                                    <button href="#" data-toggle= "modal" data-target= "#Consulta" data-backdrop="static" data-keyboard="false" tabindex="-1" class="material-control tooltips-general btn btn-return" required="" maxlength="50" onclick="pasarConsulta(<?php echo $fila->idC?>,<?php echo " '".$fila->idM."' "?>)">Pasar Consulta
+                                    <?php if($primero){ ?>
+                                      <a href="#" onclick="regresarcita(<?php echo $fila->idC?>)" class="material-control" required="" maxlength="50" btnf-data-title="Regresar al Final">
+                                        <i class="zmdi zmdi-download" style="color: #10568A;">
+                                        </i>
+                                    </a>&nbsp;&nbsp;
+                                    <button href="#" data-toggle= "modal" data-target= "#Consulta" data-backdrop="static" data-keyboard="false" tabindex="-1" class="material-control tooltips-general btn btn-return" required="" maxlength="50" onclick="pasarConsulta(<?php echo $fila->fecha?>,<?php echo " '".$fila->idM."' "?>,<?php echo $fila->idC?>)">Pasar Consulta
                                         <i class="zmdi zmdi-mail-send" style="color: #fff; margin-left: 6%">
                                         </i></button>
+                                     <?php $primero=false;}else{?> 
+                                     <button href="#" data-toggle= "modal"  disabled data-target= "#Consulta" data-backdrop="static" data-keyboard="false" tabindex="-1" class="material-control tooltips-general btn btn-return" required="" maxlength="50" onclick="pasarConsulta(<?php echo $fila->fecha?>,<?php echo " '".$fila->idM."' "?>,<?php echo $fila->idC?>)" >Pasar Consulta
+                                        <i class="zmdi zmdi-mail-send" style="color: #fff; margin-left: 6%">
+                                        </i></button><?php } ?>  
                                 </td> 
                                 </tr><?php
                             }?></tbody><?php
@@ -346,9 +416,9 @@ FROM servicios WHERE servicios.nombre='".$_POST['nombreS']."'";
 }
 
 
-if(!empty($_POST['usu']) && !empty($_POST['precio']) && !empty($_POST['servicio']) && !empty($_POST['hora']) && !empty($_POST['fecha']) && !empty($_POST['expediente']) && !empty($_POST['nombrepropietario']) && !empty($_POST['razamascota']) && !empty($_POST['mascota'])){
+if(!empty($_POST['servicio']) && !empty($_POST['precio']) && !empty($_POST['fecha']) && !empty($_POST['hora']) && !empty($_POST['expediente']) && !empty($_POST['empleado'])){
   $idemp=0;
-  list($n1, $n2) = explode(' ', $_POST['usu']);
+  list($n1, $n2) = explode(' ', $_POST['empleado']);
   $cosulta="SELECT
 empleados.id_Empleado as id,
 empleados.nombres,
@@ -382,63 +452,46 @@ servicios where servicios.nombre='".$servicio."'";
 $fecha=$_POST['fecha'];
   $hora=$_POST['hora'];
   $exp=$_POST['expediente'];
-  $estado="Pendiente";
+  $estado="Servicio Pendiente";
   $cosultaC="SELECT
-  citas.id_cita as idcita,
-citas.id_mascota as exp,
-citas.fecha as fecha
+citas.id_cita as id,
+citas.fecha as f,
+citas.id_mascota as mas
 FROM
 citas
-where citas.fecha!='".$fecha."' && citas.id_mascota!='".$exp."'";
+INNER JOIN detservicio ON detservicio.id_cita = citas.id_cita
+where citas.estado='Servicio Pendiente' && citas.id_mascota='".$exp."' && citas.fecha='".$fecha."'";
   $resultadoC = $conexion->query($cosultaC);
-  if($resultadoC){
-        $guardarE="INSERT INTO `citas`(`id_cita`, `fecha`, `hora`, `estado`, `id_empleado`, `id_mascota`) VALUES (null,'".$fecha."','".$hora."','".$estado."','".$idemp."','".$exp."')";
-         $resultadoEx = $conexion->query($guardarE);
+  $numero=$resultadoC->num_rows;
+  if($numero==0){
+        guardarcita($fecha,$hora,$estado,$idemp,$exp);
   }
-  $idCT=0;
   $cosultaCT="SELECT
   citas.id_cita as idcita,
 citas.id_mascota as exp,
 citas.fecha as fecha
 FROM
 citas
-where citas.id_cita=(SELECT MAX(citas.id_cita) from citas)";
+where citas.estado='Servicio Pendiente'  and citas.id_cita=(SELECT MAX(citas.id_cita) from citas where citas.estado='Servicio Pendiente' )";
   $resultadoCT = $conexion->query($cosultaCT);
   if($resultadoCT){
     if($fila = $resultadoCT->fetch_object()){
-      $idCT=$fila->idcita; 
-      echo "Cita=".$idCT;
+      $idCT=$fila->idcita;
       $guardarSr="INSERT INTO `detservicio`(`id_cita`, `id_servicio`) VALUES ('".$idCT."','".$idservicio."')";
       $resultadoSr = $conexion->query($guardarSr);
+      if($resultadoSr){
+        echo "Cita=".$idCT;
+      echo "Servicio=".$idservicio;
+      }
     }
   }
 
- $result=$conexion->query("SELECT
-servicios.nombre as nombre,
-servicios.precio as precio
-FROM
-citas
-INNER JOIN detservicio ON detservicio.id_cita = citas.id_cita
-INNER JOIN servicios ON detservicio.id_servicio = servicios.id_servicio
-where citas.fecha!='".$fecha."' && citas.id_mascota!='".$exp."'");
-                            if($result){
-                              ?><thead>
-                                <tr>
-                                <th>Servicios Citados</th>
-                                <th>Precio</th>
-                            </tr>
-                        </thead>
-                        <tbody><?php
-                                while($fila = $result->fetch_object()){?>
-                                <tr>
-                                    <td><?php echo $fila->nombre?></td>
-                                    <td><?php echo $fila->precio?></td>
-                                  </tr>
-                                  <?php
-                            }?>
-                            </tbody>
-                            <?php
-                       }
+}
+function guardarcita($fecha,$hora,$estado,$idemp,$exp){
+  include"../config/conexion.php";
+  $guardarC="INSERT INTO `citas`(`id_cita`, `fecha`, `hora`, `estado`, `id_empleado`, `id_mascota`) VALUES (null,'".$fecha."','".$hora."','".$estado."','".$idemp."','".$exp."')";
+         $resultadoCi = $conexion->query($guardarC);
+         return 0;
 }
 if(!empty($_POST['idCita']) && !empty($_POST['idExp'])){
   $result=$conexion->query("SELECT
@@ -460,6 +513,7 @@ INNER JOIN citas ON citas.id_mascota = mascotas.id_mascota
 INNER JOIN empleados ON empleados.id_Empleado = citas.id_empleado where mascotas.id_mascota='".$_POST['idExp']."' and citas.fecha='".$_POST['idCita']."'");
          if($result){
           if($fila = $result->fetch_object()){
+            $_SESSION["nexp"] =  $fila->idM;
             list($n1, $n2) = explode(' ', $fila->nomM);
             $mascota=$n1." ".$fila->alias." ".$n2;
             $propietario=$fila->nomP." ".$fila->apP;
@@ -505,9 +559,14 @@ if(!empty($_POST['exp']) && !empty($_POST['nombreM']) && !empty($_POST['nombreP'
 $idcita=$_POST['idcita'];
 $hora=$_POST['hora'];
 $fecha=$_POST['fecha'];
+$accion="Modificar";
+        $fechaC = date("Y-m-d");
+        $mot=$_POST['motivo'];
 $cosultaexp="UPDATE `citas` SET `fecha`='".$fecha."',`hora`='".$hora."' WHERE `id_cita`='".$idcita."'";
       $resultadoexp = $conexion->query($cosultaexp);
       if($resultadoexp){
+         $consult="INSERT INTO `bitcitas`(`id_bitCitas`, `mascota`, `descripcion`, `fecha_creacion`, `accion`, `expediente`) VALUES (null,'".$_POST['nombreM']."','".$mot."','".$fechaC."','".$accion."','".$_POST['exp']."')";
+                    $resul = $conexion->query($consult);
         actualizar();
       }
 }
@@ -518,4 +577,35 @@ if(!empty($_POST['citaEli'])){
         actualizar();
       } 
     }
+    if(!empty($_POST['regresarcita'])){
+      $id=$_POST['regresarcita'];
+      $hora;
+      $result=$conexion->query("SELECT
+citas.id_cita,
+citas.fecha,
+citas.hora as hora,
+max(citas.hora)
+FROM
+citas WHERE citas.estado='Pendiente' && citas.fecha=CURDATE() && citas.hora=(SELECT
+max(citas.hora)
+FROM
+citas WHERE citas.estado='Pendiente' && citas.fecha=CURDATE())");
+      if($result){
+        if($fila = $result->fetch_object()){
+          $hora=$fila->hora;
+        }
+      }
+///
+      $dateh = date('H:i',strtotime($hora));
+      $Nuevah = strtotime ( '+30 minute' , strtotime ($dateh) ) ;
+      $horaN = date ( 'H:i' , $Nuevah);
+      $cosultaexp="UPDATE `citas` SET `hora`='".$horaN."' WHERE `id_cita`='".$id."'";
+      $resultadoexp = $conexion->query($cosultaexp);
+      if($resultadoexp){
+        actualizar();
+      }
+    }
+
+   
+    
 ?>

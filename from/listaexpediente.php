@@ -48,16 +48,43 @@ header("location:login.php");
              });
         }
         function modifcarExp(){
-            var ftdatos=$("#frmexpediente").serialize();
-            $.ajax({
+            var exp=document.getElementById("idexpe").value;
+            var idp=document.getElementById("idpropietario").value;
+            var nombrep=document.getElementById('nombreprop').value;
+            var apellidop=document.getElementById('apellidoprop').value;
+            var femenino=document.getElementById('femenino').checked;
+            var masculino=document.getElementById('masculino').checked;
+            var telefonop=document.getElementById('telefonopro').value;
+            var direccion=document.getElementById('direccionpro').value;
+            var raza=document.getElementById('razamascota').value;
+            var especie=document.getElementById('especiemascota').value;
+            var mascotam=document.getElementById('mascota').value;
+            var corelativom=document.getElementById('corelativo').value;
+            var apellidoma=document.getElementById('apellidomas').value;
+            var fecham=document.getElementById('fechanacimiento').value;
+            var sexom=document.getElementById('sexo').value;
+            swal.fire({
+                    title: "<div>Motivo por el cual desea hacer una modificacion al expediente # <span style='color: #182d7d;'>"+exp+"</span>, que tiene como dueño a <span style='color: #182d7d;'>"+nombrep+" "+apellidop+"</span></div>",
+                    input: "text",
+                    showCancelButton: true,
+                    confirmButtonText: "Guardar",
+                    cancelButtonText: "Cancelar",
+                }).then(resultado => {
+                    if (resultado.value) {
+                        let mot = resultado.value;
+                         $.ajax({
                     type:"POST",
                     url:"../metodosAjax/guardar-expediente.php",
-                    data:ftdatos,
+                    data:{idexpe:exp,idpropietario:idp,nombrepro:nombrep,apellidoprop:apellidop,fem:femenino,mas:masculino,telefonopro:telefonop,direccionpro:direccion,razamascota:raza,especiemascota:especie,mascota:mascotam,corelativo:corelativom,apellidomas:apellidoma,fechanacimiento:fecham,sexo:sexom,motivo:mot},
                     success:function(resp){
-                       document.getElementById('miTabla').innerHTML=resp;
+                        document.getElementById('miTabla').innerHTML=resp;
                        mostrarMensaje('Se Modifico','success',null,"El registro a sido modificado satisfactoriamente ",true);
                     }
                    });
+                    }else {
+                        modificarExpe();
+                    }
+                    });
         }
         function filtrar(){
             $.ajax({
@@ -73,8 +100,11 @@ header("location:login.php");
         {
             document.getElementById('apellidomas').value = document.getElementById('apellidoprop').value;
         }
-        function eliminar(id){
-                swal({
+        function eliminar(id,nombre,apellido){
+            var exp=id;
+            var nomp=nombre;
+            var ape=apellido;
+            swal.fire({
                     title: 'Esta seguro?',
                     text: "Desea eliminar este registro",
                     type: 'warning',
@@ -84,17 +114,30 @@ header("location:login.php");
                     confirmButtonText: 'Si, eliminar!',
                 }).then((result)=>{
                     if(result.value){
+                        Swal.fire({
+                    title: "<div>Motivo por el cual desea eliminar al expediente # <span style='color: #182d7d;'>"+id+"</span>, que tiene como dueño a <span style='color: #182d7d;'>"+nombre+" "+apellido+"</span></div>",
+                    input: "text",
+                    showCancelButton: true,
+                    confirmButtonText: "Guardar",
+                    cancelButtonText: "Cancelar",
+                }).then(resultado => {
+                    if (resultado.value) {
+                        let mot = resultado.value;
                         $.ajax({
                     type:"POST",
                     url:"../metodosAjax/guardar-expediente.php",
-                    data:{ExpedienteEli:id},
+                    data:{ExpedienteEli:id,nombrep:nombre,apellidop:apellido},
                     success:function(resp){
                          document.getElementById('miTabla').innerHTML=resp;
                          mostrarMensaje('Se Elimino','success',null,"El registro fue eliminado satisfactoriamente ",true);
                     }
                    });
-                    }
-                })
+                    }else{
+                        eliminar(expe,nomp,ape);
+                         }
+                });
+            }
+        });
         }
     </script>
 </head>
@@ -128,11 +171,11 @@ header("location:login.php");
             <div class="container-fluid">
                 <div class="col-sm-11">
                     <div class="div-table">
-                        <table id="miTabla" class="display responsive nowrap" style="width:100%">
+                        <table id="miTabla" style="width:100%;" class="display1 nowrap">
                             <thead>
                                 <tr>
-                                    <th>Num. Expediente</th>
                                     <th>Propietario</th>
+                                    <th>Num. Expediente</th>
                                     <th>Nombre de Mascota</th>
                                     <th>Raza</th>
                                     <th>Especie</th>
@@ -164,10 +207,10 @@ header("location:login.php");
                                 while($fila = $result->fetch_object()){ ?>
                                     <tr>
                                         <td>
-                                            <?php echo $fila->expediente ?>
+                                            <?php echo $fila->nombre." ".$fila->apellido?>
                                         </td>
                                         <td>
-                                            <?php echo $fila->nombre." ".$fila->apellido?>
+                                            <?php echo $fila->expediente ?>
                                         </td>
                                         <td>
                                             <?php 
@@ -212,12 +255,12 @@ header("location:login.php");
                                             <?php echo $fila->sexo?>
                                         </td>
                                         <td>
-                                            <a href="#" data-toggle="modal" data-target="#modificarExpe" class="material-control tooltips-general" required="" maxlength="50" data-toggle="tooltip" data-placement="top" title="Editar" onclick="editarE(<?php echo " '".$fila->expediente."' "?>)">
+                                            <a href="#" data-toggle="modal" data-target="#modificarExpe" class="material-control tooltips-general" required="" maxlength="50" data-toggle="tooltip" data-placement="top" title="Editar" onclick="editarE(<?php echo " '".$fila->expediente."'"?>)">
                                                 <i class="zmdi zmdi-edit" style="color: #31920D;">
                                         </i>
                                             </a>
                                             &nbsp;&nbsp;
-                                            <a href="#" class="material-control tooltips-general" required="" maxlength="50" data-toggle="tooltip" data-placement="top" title="Eliminar" onclick="eliminar(<?php echo " '".$fila->expediente."' "?>)">
+                                            <a href="#" class="material-control tooltips-general" required="" maxlength="50" data-toggle="tooltip" data-placement="top" title="Eliminar" onclick="eliminar(<?php echo " '".$fila->expediente."' "?>,<?php echo " '".$fila->nombre."' "?>,<?php echo " '".$fila->apellido."' "?>)">
                                                 <i class="zmdi zmdi-delete" style="color: #F91D0B;"></i>
                                             </a>
                                         </td>
@@ -263,6 +306,24 @@ header("location:login.php");
                     <center>Universidad de EL Salvador-FMP 2019</center>
                 </div>
             </footer>
+             <script src="../assets/js/jquery.table.marge.js"></script>
+    <script>
+        //$('#textTable').margetable({
+        //    colindex:[{
+        //        index:0
+        //    },{
+        //        index:1,
+        //        dependent:[0]
+        //    },{
+        //        index:2,
+        //        dependent:[0,1]
+        //    }]
+        //});
+        $('#miTabla').margetable({
+            type: 2,
+            colindex: [0,3,4]
+        });
+    </script>
 </body>
 
 </html>

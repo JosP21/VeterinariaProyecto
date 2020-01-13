@@ -2727,19 +2727,19 @@ border-color: #abb453;
 }
 .btn-return{
 	color:#fff;
-	background-color: #55f95c;
+	background-color: #1fa626;
 	border-color: #14860770;
 }
 .btn-return.active,.btn-return.focus,.btn-return:active,.btn-return:focus,.btn-return:hover,.open>.dropdown-toggle.btn-return{
 	color:#fff;
-	background-color: #43c149;
+	background-color: #0f7314;
 	border-color: #14860770;
 }
 .btn-return.active,.btn-return:active,.open>.dropdown-toggle.btn-return{
 	background-image:none
 }
 .btn-return.disabled,.btn-return.disabled.active,.btn-return.disabled.focus,.btn-return.disabled:active,.btn-return.disabled:focus,.btn-return.disabled:hover,.btn-return[disabled],.btn-return[disabled].active,.btn-return[disabled].focus,.btn-return[disabled]:active,.btn-return[disabled]:focus,.btn-return[disabled]:hover,fieldset[disabled] .btn-return,fieldset[disabled] .btn-return.active,fieldset[disabled] .btn-return.focus,fieldset[disabled] .btn-return:active,fieldset[disabled] .btn-return:focus,fieldset[disabled] .btn-return:hover{
-	background-color:#337ab7;
+	background-color:#000;
 	border-color:#2e6da4
 }
 .btn-return .badge{
@@ -5754,8 +5754,8 @@ input[type="radio"]{
 /* Base for label styling */
 [type="checkbox"]:not(:checked),
 [type="checkbox"]:checked {
-    position: absolute;
-    left: -9999px;
+   /* position: absolute;
+    left: -9999px;*/
 }
 [type="checkbox"]:not(:checked) + label,
 [type="checkbox"]:checked + label {
@@ -5801,7 +5801,7 @@ input[type="radio"]{
 /* disabled checkbox */
 [type="checkbox"]:disabled:not(:checked) + label:before,
 [type="checkbox"]:disabled:checked + label:before {
-    box-shadow: none;
+    /*box-shadow: none;*/
     border-color: #999999;
     background-color: #dddddd;
 }

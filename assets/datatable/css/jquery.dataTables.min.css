@@ -82,7 +82,14 @@ table.dataTable.row-border tbody th,
 table.dataTable.row-border tbody td,
 table.dataTable.display tbody th,
 table.dataTable.display tbody td {
-	border-top: 1px solid #bcd8dc
+	border-top: 1px solid #bcd8dc;
+}
+
+table.dataTable.row-border tbody th,
+table.dataTable.row-border tbody td,
+table.dataTable.display1 tbody th,
+table.dataTable.display1 tbody td {
+	border-top: 1px solid #bcd8dc;border-right: 1px solid #bcd8dc;
 }
 
 table.dataTable.row-border tbody tr:first-child th,

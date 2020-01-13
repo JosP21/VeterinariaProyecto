@@ -77,6 +77,7 @@ $.ajax({
             $("#busqueda").show();
             $("#tablaS").show();
             document.getElementById('campoC').innerHTML=resp;
+            validarhoraS();
         }
     });
 }
@@ -97,6 +98,7 @@ function buscarPrecio(value){
 }
 function buscar(filtro){
     //document.getElementById('raza').value="";
+    alert(filtro);
     $.ajax({
         type:"POST",
         url:"../metodosAjax/guardar-cita.php",
@@ -120,7 +122,14 @@ function buscarP(filtro){
 $(document).ready(function(){
     $("input[name=mascota]").change(function() {
         var value=$("input[name=mascota]").val();
-        buscar(value);
+        $.ajax({
+        type:"POST",
+        url:"../metodosAjax/guardar-cita.php",
+        data:{val:value},
+        success:function(resp){
+            document.getElementById('raza').innerHTML=resp;
+        }
+    });
     });
 });
 $(document).ready(function(){
@@ -137,6 +146,11 @@ function limpiar(){
 function inicio(){
     $("#busqueda").hide();
     $("#tablaS").hide();
+}
+
+function cancelar(){
+  $("#campos").hide();
+  $("#frmaccion").show();
 }
 
 //function modall(){
@@ -326,15 +340,32 @@ function myFunction() {
                             </div>
                             </div></div>
                             <div style="margin-left: 13%;" class="col-sm-4 col-sm-offset-1">
-                                <div class="group-material" id="propietarioG">
+                                <div class="group-material">
                                     <input type="text" name="expediente" id="expediente" class="material-control tooltips-general" placeholder="# Expediente..."  data-min-length="1" data-selection-required="true" data-toggle="tooltip" data-placement="top" title="" value="" data-original-title=""><label>Expediente</label>
                                 </div></div></div></div><div id="campoC">
                                 
                             </div>
                             <div id="tablaS">
-                                 <div class="col-sm-4 col-sm-offset-0" style="margin-left: 13%;">
+                              <div class="col-sm-4 col-sm-offset-0" style="margin-left: 13%;">
+                            <div class="group-material">
+                                    <input type="text" name="empleado" id="empleado" class="material-control tooltips-general" placeholder="Nombre.." required="" autocomplete="off" data-min-length="1" data-selection-required="true" data-toggle="tooltip" data-placement="top" title="Solo Letras" value="" onkeypress="return sololetras(event);" list="listaEmpleado">
+                        <datalist id="listaEmpleado">
+                            <?php
+                            include"../config/conexion.php";
+                            $cosulta="SELECT nombres,apellidos FROM `empleados` ORDER BY nombres";
+                            $resultado = $conexion->query($cosulta);
+                            if($resultado){
+                               while($fila = $resultado->fetch_object()){
+                                echo  "<option value='".$fila->nombres." ".$fila->apellidos."'>";
+                            }
+                        }
+                        ?>                              
+                    </datalist>
+                                <label>Empleado</label>
+                            </div></div>
+                                 <div class="col-sm-3 col-sm-offset-0">
                         <div class="group-material">
-                                    <input type="text" name="servicio" id="servicio" class="material-control tooltips-general" placeholder="Nombre de Servicio.." required="" data-min-length="1" data-selection-required="true" data-toggle="tooltip" data-placement="top" title="Solo letras" onkeypress="return sololetras(event);" list="listaServ">
+                                     <input type="text" name="ser" id="ser" class="material-control tooltips-general" placeholder="Nombre Servicio..."  data-min-length="1" data-selection-required="true" data-toggle="tooltip" data-placement="top" title="" onkeypress="return sololetras(event);" data-original-title="Solo letras" list="listaServ" autocomplete="off">
                                     <datalist id="listaServ">
                                         <?php
                                             include"../config/conexion.php";
@@ -349,21 +380,25 @@ function myFunction() {
                                     </datalist>
                                 <label>Servicio</label>
                             </div></div><div id="precioSer">
-                            <div class="col-sm-3 col-sm-offset-0">
+                            <div class="col-sm-2 col-sm-offset-0">
                             <div class="group-material">
                                     <input type="text" name="precio" id="precio" class="material-control tooltips-general" placeholder="0.00" required="" autocomplete="off" data-min-length="1" data-selection-required="true" data-toggle="tooltip" data-placement="top" title="Solo numeros" value="" onkeypress="return solonumero(event);">
                                 <label>Precio ($)</label>
                             </div></div></div>
-                            <div class="col-sm-1" style="margin-top: 0.5%;margin-left: 2%;">
-                            <button type="button" id="btn-agregar" class="btn btn-add"><i class="zmdi zmdi-plus"></i> &nbsp;&nbsp; Agregar</button> </div>
-                                <div class="col-sm-6 col-sm-offset-2" style="margin-left: 9%;"><div class="div-table">
+
+                            <div style="margin-top: -1.5%;margin-left: 2%;" class="col-sm-2">
+                              <p style="margin-left: 90%;">
+  <button type="button" id="btn-guardar-ser" name="btn-guardar-ser" class="btn btn-add"> <i class="zmdi zmdi-plus"></i> &nbsp;&nbsp; Agregar Servicio</button>
+
+</p>
+                             </div>
+                                <div style="margin-left: -9%;margin-top: 3%;" class="col-sm-6 col-sm-offset-0"><div class="div-table">
     <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Buscar.." class="col-sm-6 col-sm-offset-8">
     <table id="myTable" class="display responsive nowrap" style="width:100%">
       <thead>
         <tr>
           <th>Servicio Citado</th>
           <th>Precio</th>
-          <th>Acción</th>
         </tr>
       </thead>
       <tbody id="listado">
@@ -372,7 +407,7 @@ function myFunction() {
     </table>
   </div><div style="margin: 6.5% 0;"></div>
                         </div>
-                        <div class="col-sm-4 col-sm-offset-0">
+                        <div class="col-sm-4 col-sm-offset-0" style="margin-top: 3%;">
                                     <div class="container-flat-form">
                                         
                                             <p></p><h3 align="center">TOTAL</h3>
@@ -380,8 +415,8 @@ function myFunction() {
                                             <p></p> 
                                             <hr style="color: blue" width="90%" size="3" align="center">
                                                 <div class="col-sm-6 col-sm-offset-0" style="margin-top: -6%;">
-                                                <button type="submit" class="btn btn-primary"><i class="zmdi zmdi-floppy"></i> &nbsp;&nbsp; Guardar</button></div><div class="col-sm-6 col-sm-offset-0" style="margin-top: -6%;">
-                                                <button type="reset" class="btn btn-info" style="margin-right: 20px;" onclick="cancelar()"><i class="zmdi zmdi-refresh-alt"></i> &nbsp;&nbsp; Cancelar</button></div>
+                                                <button type="button" id="btn-guardar-cta-ser" name="btn-guardar-cta-ser" class="btn btn-primary"><i class="zmdi zmdi-floppy"></i> &nbsp;&nbsp; Guardar</button></div><div class="col-sm-6 col-sm-offset-0" style="margin-top: -6%;">
+                                                <button type="reset" class="btn btn-info" style="margin-right: 20px;" onclick="location.reload()"><i class="zmdi zmdi-refresh-alt"></i> &nbsp;&nbsp; Cancelar</button></div>
                                         
                                     </div>
                                 </div>
@@ -391,7 +426,8 @@ function myFunction() {
            </div>
             </div>
         </div>
-        <script src="../assets/js/serviciocitado.js"></script>
+        <script src="../assets/js/citaservicio.js"></script>
+        <script src="../assets/js/controlservicio.js"></script>
         
 <?php
     include "../from/addexpediente.php"
@@ -413,6 +449,34 @@ function myFunction() {
         }
     });
 }
+function guardarS(){
+   $.ajax({
+        type:"POST",
+        url:"../metodosAjax/guardar-cita.php",
+        data:{tabla:getList()},
+        success:function(resp){
+           alert(resp);
+        }
+    });
+    /*$('#myTable tbody').find('tr').each(function (i, el) {
+        $.ajax({
+        type:"POST",
+        url:"../metodosAjax/guardar-cita.php",
+        data:{
+          servicio:$(this).find('td').eq(0).text(),
+          precio:parseFloat($(this).find('td').eq(1).text()),
+          fecha:document.getElementById("fechaS").value,
+          hora:document.getElementById("horas").value,
+          expediente:document.getElementById("expediente").value,
+          empleado:document.getElementById("empleado").value
+        },
+        success:function(resp){
+                
+        }
+    });
+       alert("guardo");         
+    });*/
+}
 
 function validarhora(){
     $.ajax({
@@ -424,16 +488,17 @@ function validarhora(){
         }
     });
 }
-/*function validarhora(){
+function validarhoraS(){
+  //alert(document.getElementById("fechaS").value);
     $.ajax({
         type:"POST",
         url:"../metodosAjax/guardar-cita.php",
-        data:{fdatos:document.getElementById("fecha").value},
+        data:{fdatos:document.getElementById("fechaS").value},
         success:function(resp){
                 document.getElementById("horafl1").innerHTML=resp;
         }
     });
-}*/
+}
 
 function agregarServicio(){
     var datos=$("#frmcita").serialize();
@@ -448,13 +513,16 @@ function agregarServicio(){
     });
 }
 $(document).ready(function(){
-    $("input[name=servicio]").change(function() {
-        var value=$("input[name=servicio]").val();
+    $("input[name=ser]").change(function() {
+        var value=$("input[name=ser]").val();
         buscarPrecio(value);
     });
 });
 
 
+function eliminarS(ser){
+alert(ser);
+}
     </script>
 </body>
 </html>

@@ -210,7 +210,7 @@ $fecha=isset($_POST['fecha']);
         <div class="row">
             <div style="margin-left: 6%;/*! margin-right: -20%; */" class="col-sm-6 col-sm-offset-0">
                 <div class="group-material" style="margin-right: 15%;">
-                    <input type="text" name="nombrepro" id="nombreprop" class="material-control tooltips-general" placeholder="Juan" required="" data-min-length="1" autocomplete="off" data-toggle="tooltip" data-placement="top" title="" onkeypress="return sololetras(event);" data-original-title="Solo letras" value="<?php echo $fila->propietario?>">
+                    <input type="text" name="nombreprop" id="nombreprop" class="material-control tooltips-general" placeholder="Juan" required="" data-min-length="1" autocomplete="off" data-toggle="tooltip" data-placement="top" title="" onkeypress="return sololetras(event);" data-original-title="Solo letras" value="<?php echo $fila->propietario?>">
                     <label>Nombre</label>
                 </div>
             </div>
@@ -295,7 +295,9 @@ $fecha=isset($_POST['fecha']);
       }
     }
 
-    if(!empty($_POST['idexpe']) && !empty($_POST['idpropietario']) && !empty($_POST['nombrepro']) && !empty($_POST['apellidoprop']) && !empty($_POST['genero']) && !empty($_POST['direccionpro']) && !empty($_POST['razamascota']) && !empty($_POST['especiemascota']) && !empty($_POST['mascota']) && !empty($_POST['corelativo']) && !empty($_POST['apellidomas']) && !empty($_POST['fechanacimiento']) && !empty($_POST['sexo']) && !empty($_POST['telefonopro'])){
+    if(!empty($_POST['idexpe']) && !empty($_POST['idpropietario']) && !empty($_POST['nombrepro']) && !empty($_POST['apellidoprop']) && 
+    (!empty($_POST['fem']) || !empty($_POST['mas'])) && !empty($_POST['direccionpro']) && !empty($_POST['razamascota']) && !empty($_POST['especiemascota']) && !empty($_POST['mascota']) && !empty($_POST['corelativo']) && !empty($_POST['apellidomas']) && !empty($_POST['fechanacimiento']) && !empty($_POST['sexo']) && !empty($_POST['telefonopro'])){
+      $sexopro="";
       $idprop=$_POST['idpropietario'];
       $idexp=$_POST['idexpe'];
       $nombrepro=$_POST['nombrepro'];
@@ -303,30 +305,65 @@ $fecha=isset($_POST['fecha']);
       $apellidomas=$_POST['apellidomas'];
       $direccion=$_POST['direccionpro'];
       $tele=$_POST['telefonopro'];
-      $sexopro=$_POST['genero'];
       $mascota=$_POST['mascota'];
       $alias=$_POST['corelativo'];
       $telefon=null;
+      $accion="Modificar";
+        $fecha = date("Y-m-d");
+        $mot=$_POST['motivo'];
       if(strlen($tele)==9){
         $telefon=$tele;
       }else{
         $telefon=substr($tele, 0,4)."-".substr($tele, 4,4);
+      } 
+      if(!empty($_POST['fem'])){
+        $sexopro="Femenino";
       }
+      if(!empty($_POST['mas'])){
+        $sexopro="Masculino";
+      }
+      //echo "idp=".$idprop.",nombre=".$nombrepro.",apellido=".$apellidopro.",sexo=".$sexopro.",direccio=".$direccion.",telefono=".$telefon;
       $nombremasco=$mascota." ".$apellidomas;
-      $cosulta="UPDATE `propietario` SET `nombres`='".$nombrepro."',`apellidos`='".$apellidopro."',`sexo`='".$sexopro."',`direccion`='".$direccion."',`telefono`='".$telefon."' WHERE `id_propietario`='".$idprop."'";
+     $cosulta="UPDATE `propietario` SET `nombres`='$nombrepro',`apellidos`='$apellidopro',`sexo`='$sexopro',`direccion`='$direccion',`telefono`='$telefon' WHERE `id_propietario`='$idprop'";
       $resultado = $conexion->query($cosulta);
       if($resultado){
-      $cosultaexp="UPDATE `mascotas` SET `nombre`='".$nombremasco."',`alias`='".$alias."',`id_propietario`='".$idprop."' WHERE `id_mascota`='".$idexp."'";
+      $cosultaexp="UPDATE `mascotas` SET `nombre`='$nombremasco',`alias`='$alias' WHERE `id_mascota`='$idexp'";
       $resultadoexp = $conexion->query($cosultaexp);
       if($resultadoexp){
+        $consult="INSERT INTO `bitexpediente`(`id_bitExp`, `nexpediente`, `mascota`, `alias`, `sexo`, `fechanac`, `raza`, `propietario`, `motivo`, `fecha`, `accion`) VALUES (null,'".$idexp."','".$mascota."','".$alias."','".$_POST['sexo']."','".$_POST['fechanacimiento']."','".$_POST['razamascota']."','".$nombrepro." ".$apellidopro."','".$mot."','".$fecha."','".$accion."')";
+        $resul = $conexion->query($consult);
         actualizar();
       }
-      }
+     }
     }
 
     if(!empty($_POST['ExpedienteEli'])){
       $id=$_POST['ExpedienteEli'];
-      $result=$conexion->query("DELETE FROM `mascotas` WHERE `id_mascota`='".$id."'");
+        $fecha = date("Y-m-d");
+        $mot=$_POST['motivo'];
+        $accion="Eliminar";
+        $cosulta="SELECT
+mascotas.id_mascota as exp,
+mascotas.nombre as nombre,
+mascotas.alias as alias,
+mascotas.sexo as sexo,
+mascotas.fechanac as fechan,
+propietario.nombres as nombrep,
+propietario.apellidos as apellidop,
+raza.nombre as raza
+FROM
+mascotas
+INNER JOIN propietario ON mascotas.id_propietario = propietario.id_propietario
+INNER JOIN raza ON mascotas.id_raza = raza.id_raza
+where mascotas.id_mascota='".$id."'";
+            $resultado = $conexion->query($cosulta);
+            if($resultado){
+              if($fila = $resultado->fetch_object()){
+                $consult="INSERT INTO `bitexpediente`(`id_bitExp`, `nexpediente`, `mascota`, `alias`, `sexo`, `fechanac`, `raza`, `propietario`, `motivo`, `fecha`, `accion`) VALUES (null,'".$fila->exp."','".$fila->nombre."','".$fila->alias."','".$fila->sexo."','".$fila->fechan."','".$fila->raza."','".$fila->nombrep." ".$fila->apellidop."','".$mot."','".$fecha."','".$accion."')";
+                    $resul = $conexion->query($consult);
+              }
+        }
+      $result=$conexion->query("DELETE FROM `mascotas` WHERE `id_mascota`='$id'");
       if($result){
         actualizar();
       } 
@@ -334,11 +371,21 @@ $fecha=isset($_POST['fecha']);
     function actualizar(){
       include"../config/conexion.php";
       include"../metodosAjax/filtrarfecha.php";
-         $result=$conexion->query("SELECT mascotas.id_mascota as expediente,propietario.nombres as nombre,propietario.apellidos as apellido,mascotas.nombre as mascota,mascotas.alias as alias,raza.nombre as raza,especies.nombre as especie,mascotas.fechanac as edad,mascotas.sexo as sexo
-           FROM propietario
-           INNER JOIN mascotas ON mascotas.id_propietario = propietario.id_propietario
-           INNER JOIN raza ON mascotas.id_raza = raza.id_raza
-           INNER JOIN especies ON raza.id_especie = especies.id_especie");
+         $result=$conexion->query("SELECT
+                                mascotas.id_mascota as expediente,
+                                propietario.nombres as nombre,
+                                propietario.apellidos as apellido,
+                                mascotas.nombre as mascota,
+                                mascotas.alias as alias,
+                                raza.nombre as raza,
+                                especies.nombre as especie,
+                                mascotas.fechanac as edad,
+                                mascotas.sexo as sexo
+                                FROM
+                                propietario
+                                INNER JOIN mascotas ON mascotas.id_propietario = propietario.id_propietario
+                                INNER JOIN raza ON mascotas.id_raza = raza.id_raza
+                                INNER JOIN especies ON raza.id_especie = especies.id_especie");
             if($result){?>
                                 <thead>
                                 <tr>
@@ -411,7 +458,7 @@ $fecha=isset($_POST['fecha']);
                                         </i>
                                             </a>
                                             &nbsp;&nbsp;
-                                            <a href="#" class="material-control tooltips-general" required="" maxlength="50" data-toggle="tooltip" data-placement="top" title="Eliminar" onclick="eliminar(<?php echo " "?>)">
+                                            <a href="#" class="material-control tooltips-general" required="" maxlength="50" data-toggle="tooltip" data-placement="top" title="Eliminar" onclick="eliminar(<?php echo " '".$fila->expediente."' "?>,<?php echo " '".$fila->nombre."' "?>,<?php echo " '".$fila->apellido."' "?>)">
                                                 <i class="zmdi zmdi-delete" style="color: #F91D0B;"></i>
                                             </a>
                                         </td>
