@@ -1,3 +1,8 @@
+<?php session_start();
+  if($_SESSION["logeado"] == false) {
+header("location:login.php");
+  }
+  ?>
 <!-- 
 * Copyright 2016 Carlos Eduardo Alfaro Orellana
 -->
