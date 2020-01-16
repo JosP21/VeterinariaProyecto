@@ -92,7 +92,7 @@ $fechacorrecta= date("Y-m-d",strtotime($fecha."+ 150 days"));
   <script type="text/javascript" src="../assets/datatable/js/jquery.dataTables.min.js"></script>
   <script type="text/javascript" src="../assets/datatable/js/dataTables.responsive.min.js"></script>
   <script type="text/javascript" src="../assets/datatable/datatable.js"></script>
-
+  
 
   <script type="text/javascript">
 
@@ -117,7 +117,10 @@ $fechacorrecta= date("Y-m-d",strtotime($fecha."+ 150 days"));
       });
     }
 
-
+    function abrirFac(){
+         var url = "../from/factura.php";
+        window.open(url, "Nuevo","alwaysRaised=no,toolbar=no,menubar=no,status=no,resizable=no,width=2000%,height=1000%,location=no");
+    }
     function myFunction() {
   // Declare variables
   var input, filter, table, tr, td, i, txtValue;
@@ -347,7 +350,7 @@ function controlExistencia(){
                               </div><div style="margin: 6.5% 0;"></div>
                             </div>
 
-                            <div class="col-sm-4 col-sm-offset-1">
+                            <div style="margin-left: 5%;" class="col-sm-4 col-sm-offset-0">
                              <div class="container-flat-form">
 
                               <div class="container-fluid">
@@ -355,8 +358,8 @@ function controlExistencia(){
                                   <div class="col-sm-9">
                                     <p></p><h4 style="margin-top: 20%;">Cantidad de Productos: </h4><p></p> 
                                   </div> 
-                                  <div class="col-sm-3">
-                                    <input type="text" min="1" id="cantidadpro" style="/*! height: 1px; */ margin-top: 21px;" class="material-control" readonly="readonly" value="">
+                                  <div class="col-sm-4">
+                                  <input type="text"id="cantidadpro" min="1" style="/*! height: 1px; */ margin-top: 21px;" class="material-control" readonly="readonly" value="800">
                                   </div> 
                                 </div>
                               </div>                              
@@ -367,8 +370,12 @@ function controlExistencia(){
                               <hr style="color: blue" width="90%" size="3" align="center">
                               <!--BotonFacturar-->
                               <p class="text-center" style="margin-top: 10%">
-                                <button type="button" id="btn-guardar" class="btn btn-add" ><i class="zmdi zmdi-floppy"></i> &nbsp;&nbsp; Guardar</button>
+                                <button type="button" id="btn-guardar" class="btn btn-add" ><i class="zmdi zmdi-floppy" ></i> &nbsp;&nbsp; Guardar</button>
                                 <button type="reset" class="btn btn-info" style=""><i class="zmdi zmdi-refresh-alt"></i> &nbsp;&nbsp; Cancelar</button>
+                              </p> 
+                               <p class="text-center" style="margin-top: 10%">
+                                <button type="button" id="btn-guardar" class="btn btn-add" ><i class="zmdi zmdi-floppy" onclick="abrirFac()"></i> &nbsp;&nbsp; Factura</button>
+                                
                               </p> 
                             </div>
                           </div>
@@ -476,6 +483,8 @@ function controlExistencia(){
                     </div>
                   </div>s
                 </div>
+
                 <script src="../assets/js/ventas.js"></script>
               </body>
               </html>
+
