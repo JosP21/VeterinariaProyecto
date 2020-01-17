@@ -396,8 +396,8 @@ $fechacorrecta= date("Y-m-d",strtotime($fecha."+ 150 days"));
       <thead>
         <tr>
           <th>Nombre Producto</th>
-          <th>Precio Compra</th>
           <th>Cantidad</th>
+          <th>Precio compra</th>
           <th>Total</th>
           <th>Acción</th>
         </tr>
